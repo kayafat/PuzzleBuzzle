@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PuzzleBuzzle</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #346245;
+        }
+
+        .button-container {
+            position: absolute;
+            top: 45%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 1; 
+        }
+
+        .button {
+            background-color: white;
+            color: #346245;
+            border: none;
+            padding: 15px 40px; 
+            cursor: pointer;
+            margin: 10px 0; 
+            font-size: 18px; 
+            border-radius: 5px; 
+            text-transform: uppercase;
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="button-container">
+        <button class="button" id="Easy">Easy</button>
+        <button class="button" id="Normal">Normal</button>
+        <button class="button" id="Hard">Hard</button>
+    </div>
+
+    <canvas id="canvas" width="500" height="600"></canvas>
+    <script src="script.js"></script>
+</body>
+
+</html>

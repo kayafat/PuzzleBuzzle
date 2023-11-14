@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PuzzleBuzzle</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #346245;
+        }
+
+        .back-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1;
+        }
+
+        .back {
+            background-color: white;
+            color: #346245;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black background */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #4CAF50; /* Green */
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white; /* Set text color to white */
+        }
+
+        #retryBtn,
+        #menuBtn,
+        #modal-text {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 30px 50px; /* Adjust padding for larger buttons */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 34px; /* Adjust font size for larger buttons */
+            margin: 20px; /* Adjust margin for larger buttons */
+            cursor: pointer;
+            border-radius: 20px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="back-container">
+        <button class="back" id="goback">Back</button>
+    </div>
+
+    <canvas id="canvas" width="500" height="600"></canvas>
+    <span id="timer" style="color: white; font-size: 30px;"></span>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p id="modal-text"></p>
+            <button id="retryBtn">Retry</button>
+            <button id="menuBtn">Back to Menu</button>
+        </div>
+    </div>
+    <script src="easy.js"></script>
+</body>
+
+</html>
