@@ -244,17 +244,24 @@ function getSwipeDirection(startX, startY, endX, endY) {
 
  
 
-    function handleTouchEnd(event) {
-        event.preventDefault();
-        if (event.touches.length !== 2) {
-            isDragging = false;
-    
-            if (selectedShape) {
-                const touch = event.changedTouches[0];
-                const touchEndX = touch.clientX - canvas.getBoundingClientRect().left;
-                const touchEndY = touch.clientY - canvas.getBoundingClientRect().top;
-    
-                // Check if the piece is within the playfield
+function handleTouchEnd(event) {
+    event.preventDefault();
+    if (event.touches.length !== 2) {
+        isDragging = false;
+
+        if (selectedShape) {
+            const touch = event.changedTouches[0];
+            const touchEndX = touch.clientX - canvas.getBoundingClientRect().left;
+            const touchEndY = touch.clientY - canvas.getBoundingClientRect().top;
+
+            // Check if the piece is within the playfield
+            if (
+                touchEndX >= rectX &&
+                touchEndX <= rectX + rectWidth &&
+                touchEndY >= rectY &&
+                touchEndY <= rectY + rectHeight
+            ) {
+                // Check if the piece is also in the lock area
                 if (
                     touchEndX >= rectX &&
                     touchEndX <= rectX + rectWidth &&
@@ -263,106 +270,42 @@ function getSwipeDirection(startX, startY, endX, endY) {
                 ) {
                     // Check if the piece is also in the lock area
                     if (
-                        touchEndX >= rectX &&
-                        touchEndX <= rectX + rectWidth &&
-                        touchEndY >= rectY &&
-                        touchEndY <= rectY + rectHeight
+                        touchEndX <= selectedShape.lockX + xy &&
+                        touchEndX >= selectedShape.lockX &&
+                        touchEndY >= selectedShape.lockY &&
+                        touchEndY <= selectedShape.lockY + xy
                     ) {
-                        // Check if the piece is also in the lock area
-                        if (
-                            touchEndX <= selectedShape.lockX + xy &&
-                            touchEndX >= selectedShape.lockX &&
-                            touchEndY >= selectedShape.lockY &&
-                            touchEndY <= selectedShape.lockY + xy
-                        ) {
-                            selectedShape.x = selectedShape.lockX;
-                            selectedShape.y = selectedShape.lockY;
-                            selectedShape.isLocked = true;
-                            lockedPieces++;
-                            if (lockedPieces === shapes.length) {
-                                showGameOverModal();
-                            }
-                        } else {
-                            selectedShape.x = selectedShape.resetX;
-                            selectedShape.y = selectedShape.resetY;
+                        selectedShape.x = selectedShape.lockX;
+                        selectedShape.y = selectedShape.lockY;
+                        selectedShape.isLocked = true;
+                        lockedPieces++;
+                        if (lockedPieces === shapes.length) {
+                            showGameOverModal();
                         }
+                    } else {
+                        selectedShape.x = selectedShape.resetX;
+                        selectedShape.y = selectedShape.resetY;
                     }
                 }
-            }                    
-    
-            selectedShape = null;
+            }
+            
+            // Rotate the shape by 90 degrees
+            selectedShape.angle += rotationStep;
+
+            // Draw shapes after rotation
             drawShapes();
-        }
+        }                    
+    
+        selectedShape = null;
+        drawShapes();
     }
+}
     
   
     function isTouchInShape(x, y, shape) {
         return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
     }
   
-  /*
-  canvas.addEventListener('mousedown', (event) => {
-  const mouseX = event.clientX - offset_x;
-  const mouseY = event.clientY - offset_y;
-  for (const shape of shapes) {
-      if (isMouseInShape(mouseX, mouseY, shape)) {
-          if (!shape.isLocked) {
-              isDragging = true;
-              selectedShape = shape;
-              startX = mouseX - shape.x;
-              startY = mouseY - shape.y;
-          }
-          break;
-      }
-  }
-  });
-  
-  canvas.addEventListener('mouseup', () => {
-      isDragging = false;
-      if (selectedShape) {
-          if (selectedShape.x <= (selectedShape.lockX + 100) && selectedShape.x >= (selectedShape.lockX - 100) && selectedShape.y >= (selectedShape.lockY - 100) && selectedShape.y >= (selectedShape.lockY - 100)) {
-              if (selectedShape.angle === 0) {
-                  selectedShape.x = selectedShape.lockX;
-                  selectedShape.y = selectedShape.lockY;
-                  selectedShape.isLocked = true;
-                  lockedPieces++; // Increment the lockedPieces count
-                  if (lockedPieces === shapes.length) {
-                      // All pieces are locked, trigger game won logic
-                      showGameOverModal();
-                  }
-              } else {
-                  selectedShape.x = selectedShape.resetX;
-                  selectedShape.y = selectedShape.resetY;
-              }
-          }
-      }
-      selectedShape = null;
-      drawShapes();
-  });
-  
-  canvas.addEventListener('mousemove', (event) => {
-  if (isDragging && selectedShape && !selectedShape.isLocked) {
-      const mouseX = event.clientX - offset_x;
-      const mouseY = event.clientY - offset_y;
-      selectedShape.x = mouseX - startX;
-      selectedShape.y = mouseY - startY;
-      drawShapes();
-  }
-  });
-  
-  document.addEventListener("keydown", (event) => {
-  if (selectedShape && !selectedShape.isLocked) {
-      if (event.key === "ArrowLeft") {
-          // Nach links drehen
-          selectedShape.angle -= rotationStep;
-      } else if (event.key === "ArrowRight") {
-          // Nach rechts drehen
-          selectedShape.angle += rotationStep;
-      }
-      drawShapes(); // Das aktualisierte Bild zeichnen
-  }
-  });
-  */
   // Anzeige ob man gewonnen oder verloren hat wenn der Timer abläuft
   
   function showGameOverModal() {
