@@ -47,6 +47,10 @@ let startX, startY;
 let rotationStep = Math.PI / 2; 
 let selectedShape = null;
 
+let rotationStartAngle = 0;
+let rotationStartX = 0;
+let rotationStartY = 0;
+
 function getRandomInt(min, max) {
 return Math.floor(Math.random() * (max - min + 1)) + min;
 }
