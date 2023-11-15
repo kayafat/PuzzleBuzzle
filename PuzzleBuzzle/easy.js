@@ -147,35 +147,16 @@ window.onload = () => {
   canvas.addEventListener("touchend", handleTouchEnd);
  
   let secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY;
-let rotationThreshold = 50; // Schwellenwert für die Rotation in Pixeln, kann angepasst werden
+let rotationThresholdInPixels = 50; // Schwellenwert für die Rotation in Pixeln, kann angepasst werden
+let rotationDistanceThreshold = cmToPixels(2); // Umrechnung von 2 cm in Pixel, anpassbar
+let rotationInProgress = false;
 
-function handleTouchStart(event) {
-    event.preventDefault();
-
-    // Check for the second touch
-    if (event.touches.length === 2) {
-        const touch1 = event.touches[0];
-        const touch2 = event.touches[1];
-        secondTouchStartX = (touch1.clientX + touch2.clientX) / 2;
-        secondTouchStartY = (touch1.clientY + touch2.clientY) / 2;
-    } else {
-        // Your existing touchstart logic
-        const touch = event.touches[0];
-        touchStartX = touch.clientX - canvas.getBoundingClientRect().left;
-        touchStartY = touch.clientY - canvas.getBoundingClientRect().top;
-
-        for (const shape of shapes) {
-            if (isTouchInShape(touchStartX, touchStartY, shape)) {
-                if (!shape.isLocked) {
-                    isDragging = true;
-                    selectedShape = shape;
-                    startX = touchStartX - shape.x;
-                    startY = touchStartY - shape.y;
-                }
-                break;
-            }
-        }
-    }
+function cmToPixels(cm) {
+    // Hier sollte die tatsächliche Umrechnung von Zentimetern in Pixeln erfolgen
+    // Sie müssen dies basierend auf der Bildschirmauflösung und dem Gerät DPI berechnen
+    // Für dieses Beispiel verwenden wir einen einfachen Wert
+    const dpi = 96; // Annahme der Standardbildschirmauflösung
+    return cm * dpi / 2.54;
 }
 
 function handleTouchMove(event) {
@@ -196,9 +177,14 @@ function handleTouchMove(event) {
             secondTouchEndX = (touch1.clientX + touch2.clientX) / 2;
             secondTouchEndY = (touch1.clientY + touch2.clientY) / 2;
 
-            // Check the direction of the second swipe and rotate accordingly
+            // Berechne die zurückgelegte Distanz zwischen Start und Ende des Wischens
             const swipeDistance = Math.sqrt(Math.pow((secondTouchEndX - secondTouchStartX), 2) + Math.pow((secondTouchEndY - secondTouchStartY), 2));
-            if (swipeDistance >= rotationThreshold) {
+
+            // Überprüfe, ob die zurückgelegte Distanz den Schwellenwert überschreitet
+            if (swipeDistance >= rotationDistanceThreshold && !rotationInProgress) {
+                rotationInProgress = true;
+
+                // Überprüfe die Richtung des Wischens und drehe entsprechend
                 const swipeDirection = getSwipeDirection(secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY);
                 if (swipeDirection === 'right') {
                     selectedShape.angle += Math.PI / 2;
@@ -207,7 +193,6 @@ function handleTouchMove(event) {
                 }
 
                 drawShapes();
-                return;
             }
         }
 
@@ -222,28 +207,11 @@ function handleTouchMove(event) {
         drawShapes();
     }
 }
-
-function getSwipeDirection(startX, startY, endX, endY) {
-    const deltaX = endX - startX;
-    const deltaY = endY - startY;
-    const angle = Math.atan2(deltaY, deltaX);
-    const angleInDegrees = angle * (180 / Math.PI);
-
-    if (angleInDegrees >= -45 && angleInDegrees <= 45) {
-        return 'right';
-    } else if (angleInDegrees > 45 && angleInDegrees <= 135) {
-        return 'up';
-    } else if (angleInDegrees > 135 || angleInDegrees <= -135) {
-        return 'left';
-    } else {
-        return 'down';
-    }
-}
-
  
 
     function handleTouchEnd(event) {
         event.preventDefault();
+        rotationInProgress = false;
         if (event.touches.length !== 2) {
             isDragging = false;
     
