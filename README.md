@@ -13,7 +13,7 @@ To play on mobile devices:
 
 		https://glitch.com/edit/#!/insidious-waiting-pram?path=README.md%3A1%3A0
   
- 3. Choose Settings on the left of the screen
+ 3. Once you are on glitch.com choose Settings on the left of the screen
     
 		-> New Project
 		-> Import from GitHub (At the bottom of the opened window)
