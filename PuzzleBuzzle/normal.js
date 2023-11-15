@@ -17,15 +17,9 @@ window.onload = () => {
     // Berechne die Position des Rechtecks, um es in der Mitte des Canvas zu platzieren
     const rectX = (canvas.width - rectWidth) / 2;
     const rectY = (canvas.height - rectHeight) / 4;
-    // Breite und Höhe des Rechtecks 3x3
-    const conWidth = 400;
-    const conHeight = 100;
-    // Berechne die Position des Rechtecks, um es in der Mitte des Canvas zu platzieren
-    const conX = (canvas.width - conWidth) / 2;
-    const conY = rectHeight + 170;
     
     // Countdown-Variablen
-    let countdown = 240; // Startzeit in Sekunden
+    let countdown = 300; // Startzeit in Sekunden
     let countdownInterval; // Variable für das Intervall
     let lockedPieces = 0; // Anzahl für eingerastete Puzzleteile
     
@@ -44,12 +38,9 @@ window.onload = () => {
   const images = [];
   let isDragging = false;
   let startX, startY;
-  let rotationStep = Math.PI / 2; 
   let selectedShape = null;
 
   let rotationStartAngle = 0;
-  let rotationStartX = 0;
-  let rotationStartY = 0;
   
   function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -168,12 +159,6 @@ Promise.all([
 });
 
 
-function isMouseInShape(x, y, shape) {
-    return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
-    }
-    
-    // Event Listener noch nicht für Touch sondern erstmals für Maus hinzugefügt
-    // Wird noch geändert
     
     let touchStartX, touchStartY;
     
@@ -181,7 +166,6 @@ function isMouseInShape(x, y, shape) {
     canvas.addEventListener("touchstart", handleTouchStart);
     canvas.addEventListener("touchmove", handleTouchMove);
     canvas.addEventListener("touchend", handleTouchEnd);
-    let secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY;
     
     function handleTouchStart(event) {
           event.preventDefault();
@@ -244,11 +228,7 @@ function isMouseInShape(x, y, shape) {
                   const touch = event.touches[0];
                   const touchX = touch.clientX - canvas.getBoundingClientRect().left;
                   const touchY = touch.clientY - canvas.getBoundingClientRect().top;
-      
-                  // Calculate the change in position
-                  const deltaX = touchX - touchStartX;
-                  const deltaY = touchY - touchStartY;
-      
+
                   // Move the shape
                   selectedShape.x = touchX - startX;
                   selectedShape.y = touchY - startY;
@@ -456,7 +436,7 @@ function isMouseInShape(x, y, shape) {
                   ctx.beginPath();
                   ctx.lineWidth = "2";
                   ctx.strokeStyle = "black";
-                  ctx.rect(rectX + 5* xy + 20, rectY, 200, 200);
+                  ctx.rect(rectX, rectY + rectHeight + 20, 200, 200);
                   ctx.stroke();
           
                   ctx.drawImage(image2, rectX + 5* xy + 20, rectY, 200, 200);

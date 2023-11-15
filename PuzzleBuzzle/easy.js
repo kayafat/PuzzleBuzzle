@@ -40,12 +40,9 @@ window.onload = () => {
   const images = [];
   let isDragging = false;
   let startX, startY;
-//  let rotationStep = Math.PI / 2; 
   let selectedShape = null;
 
   let rotationStartAngle = 0;
-//  let rotationStartX = 0;
-//  let rotationStartY = 0;
   
   function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -130,15 +127,7 @@ window.onload = () => {
   .catch((error) => {
     console.error('Fehler beim Laden der Bilder:', error);
   });
-  
-  
-  function isMouseInShape(x, y, shape) {
-  return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
-  }
-  
-  // Event Listener noch nicht für Touch sondern erstmals für Maus hinzugefügt
-  // Wird noch geändert
-  
+    
   let touchStartX, touchStartY;
   
   // Event Listener for the second touch event (swipe to rotate)
@@ -209,10 +198,6 @@ window.onload = () => {
                 const touchX = touch.clientX - canvas.getBoundingClientRect().left;
                 const touchY = touch.clientY - canvas.getBoundingClientRect().top;
     
-                // Calculate the change in position
-                const deltaX = touchX - touchStartX;
-                const deltaY = touchY - touchStartY;
-    
                 // Move the shape
                 selectedShape.x = touchX - startX;
                 selectedShape.y = touchY - startY;
@@ -256,7 +241,7 @@ window.onload = () => {
                         const angleDifference = Math.abs(selectedShape.angle - correctAngle);
     
                         // Allow some tolerance for the correct orientation
-                        if (angleDifference < 0.5) { // You can adjust the tolerance as needed
+                        if (angleDifference < 0.1) { // You can adjust the tolerance as needed
                             selectedShape.x = selectedShape.lockX;
                             selectedShape.y = selectedShape.lockY;
                             selectedShape.isLocked = true;
@@ -271,12 +256,12 @@ window.onload = () => {
                         } else {
                             selectedShape.x = selectedShape.resetX;
                             selectedShape.y = selectedShape.resetY;
-                            selectedShape.angle = whichAngle(selectedShape.angle); // Reset the rotation angle if not in correct orientation
+                            selectedShape.angle = 0;
                         }
                     } else {
                         selectedShape.x = selectedShape.resetX;
                         selectedShape.y = selectedShape.resetY;
-                        selectedShape.angle = whichAngle(selectedShape.angle); // Reset the rotation angle if not in the lock area
+                        selectedShape.angle = 0;
                     }
                 }
             }
@@ -284,24 +269,7 @@ window.onload = () => {
             selectedShape = null;
             drawShapes();
         }
-    }
-
-    function whichAngle(angle) {
-        const tolerance = 10; // Toleranzbereich für Winkeländerung
-    
-        if (angle > 1 && angle <= 90 + tolerance) {
-            angle = 90;
-        } else if (angle > 90 - tolerance && angle <= 180 + tolerance) {
-            angle = 180;
-        } else if (angle > 180 - tolerance && angle <= 270 + tolerance) {
-            angle = 270;
-        } else {
-            angle = 0;
-        }
-    
-        return angle * Math.PI / 180;
-    }
-    
+    }    
   
     function isTouchInShape(x, y, shape) {
         return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
