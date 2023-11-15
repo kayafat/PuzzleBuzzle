@@ -106,7 +106,7 @@ window.onload = () => {
         images.push(image);
   
         // Generiere zufällige x- und y-Koordinaten, wobei x links vom Rechteck liegt
-        const randomX = getRandomInt(rectX - xy, rectX-2*xy);
+        const randomX = getRandomInt(rectX - (xy / 2), rectX-2*xy);
         const randomY = getRandomInt(rectY, rectY + rectHeight + xy);
         const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);
   
