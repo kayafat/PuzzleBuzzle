@@ -240,7 +240,6 @@ let rotationStartY = 0;
                 const touchEndX = touch.clientX - canvas.getBoundingClientRect().left;
                 const touchEndY = touch.clientY - canvas.getBoundingClientRect().top;
     
-                // Check if the piece is within the playfield
                 if (
                     touchEndX >= rectX &&
                     touchEndX <= rectX + rectWidth &&
@@ -256,13 +255,13 @@ let rotationStartY = 0;
                         // Calculate the rotated position
                         const rotatedX = selectedShape.lockX + (Math.cos(selectedShape.angle) * (selectedShape.x - selectedShape.lockX) - Math.sin(selectedShape.angle) * (selectedShape.y - selectedShape.lockY));
                         const rotatedY = selectedShape.lockY + (Math.sin(selectedShape.angle) * (selectedShape.x - selectedShape.lockX) + Math.cos(selectedShape.angle) * (selectedShape.y - selectedShape.lockY));
-                    
+                
                         // Set the position and lock the piece
                         selectedShape.x = rotatedX;
                         selectedShape.y = rotatedY;
                         selectedShape.isLocked = true;
                         lockedPieces++;
-                    
+                
                         if (lockedPieces === shapes.length) {
                             showGameOverModal();
                         }
