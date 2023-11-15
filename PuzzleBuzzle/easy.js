@@ -255,20 +255,32 @@ let rotationStartY = 0;
                         touchEndY >= selectedShape.lockY &&
                         touchEndY <= selectedShape.lockY + xy
                     ) {
-                        selectedShape.x = selectedShape.lockX;
-                        selectedShape.y = selectedShape.lockY;
-                        selectedShape.isLocked = true;
-                        lockedPieces++;
+                        // Check if the piece is in the correct orientation
+                        const correctAngle = 0; // Adjust this angle based on your requirement
+                        const angleDifference = Math.abs(selectedShape.angle - correctAngle);
     
-                        // Reset the rotation angle to 0 when the piece is locked
-                        selectedShape.angle = 0;
+                        // Allow some tolerance for the correct orientation
+                        if (angleDifference < 0.1) { // You can adjust the tolerance as needed
+                            selectedShape.x = selectedShape.lockX;
+                            selectedShape.y = selectedShape.lockY;
+                            selectedShape.isLocked = true;
+                            lockedPieces++;
     
-                        if (lockedPieces === shapes.length) {
-                            showGameOverModal();
+                            // Reset the rotation angle to 0 when the piece is locked
+                            selectedShape.angle = 0;
+    
+                            if (lockedPieces === shapes.length) {
+                                showGameOverModal();
+                            }
+                        } else {
+                            selectedShape.x = selectedShape.resetX;
+                            selectedShape.y = selectedShape.resetY;
+                            selectedShape.angle = 0; // Reset the rotation angle if not in correct orientation
                         }
                     } else {
                         selectedShape.x = selectedShape.resetX;
                         selectedShape.y = selectedShape.resetY;
+                        selectedShape.angle = 0; // Reset the rotation angle if not in the lock area
                     }
                 }
             }
@@ -277,6 +289,7 @@ let rotationStartY = 0;
             drawShapes();
         }
     }
+    
     
     
   
