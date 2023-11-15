@@ -230,65 +230,71 @@ let rotationStartY = 0;
         }
     }
 
+    let lastValidX, lastValidY, lastValidAngle;
+
     function handleTouchEnd(event) {
         event.preventDefault();
     
         if (event.touches.length !== 2) {
-            isDragging = false;
+          isDragging = false;
     
-            if (selectedShape) {
-                const touch = event.changedTouches[0];
-                const touchEndX = touch.clientX - canvas.getBoundingClientRect().left;
-                const touchEndY = touch.clientY - canvas.getBoundingClientRect().top;
+          if (selectedShape) {
+            const touch = event.changedTouches[0];
+            const touchEndX = touch.clientX - canvas.getBoundingClientRect().left;
+            const touchEndY = touch.clientY - canvas.getBoundingClientRect().top;
     
-                // Check if the piece is within the playfield
-                if (
-                    touchEndX >= rectX &&
-                    touchEndX <= rectX + rectWidth &&
-                    touchEndY >= rectY &&
-                    touchEndY <= rectY + rectHeight
-                ) {
-                    // Check if the piece is also in the lock area
-                    if (
-                        touchEndX <= selectedShape.lockX + xy &&
-                        touchEndX >= selectedShape.lockX &&
-                        touchEndY >= selectedShape.lockY &&
-                        touchEndY <= selectedShape.lockY + xy
-                    ) {
-                        // Check if the piece is in the correct orientation
-                        const correctAngle = 0; // Adjust this angle based on your requirement
-                        const angleDifference = Math.abs(selectedShape.angle - correctAngle);
+            // Check if the piece is within the playfield
+            if (
+              touchEndX >= rectX &&
+              touchEndX <= rectX + rectWidth &&
+              touchEndY >= rectY &&
+              touchEndY <= rectY + rectHeight
+            ) {
+              // Check if the piece is also in the lock area
+              if (
+                touchEndX <= selectedShape.lockX + xy &&
+                touchEndX >= selectedShape.lockX &&
+                touchEndY >= selectedShape.lockY &&
+                touchEndY <= selectedShape.lockY + xy
+              ) {
+                // Check if the piece is in the correct orientation
+                const correctAngle = 0; // Adjust this angle based on your requirement
+                const angleDifference = Math.abs(selectedShape.angle - correctAngle);
     
-                        // Allow some tolerance for the correct orientation
-                        if (angleDifference < 0.1) { // You can adjust the tolerance as needed
-                            selectedShape.x = selectedShape.lockX;
-                            selectedShape.y = selectedShape.lockY;
-                            selectedShape.isLocked = true;
-                            lockedPieces++;
-    
-                            // Reset the rotation angle to 0 when the piece is locked
-                            selectedShape.angle = 0;
-    
-                            if (lockedPieces === shapes.length) {
-                                showGameOverModal();
-                            }
-                        } else {
-                            selectedShape.x = selectedShape.resetX;
-                            selectedShape.y = selectedShape.resetY;
-                            selectedShape.angle = 0; // Reset the rotation angle if not in correct orientation
-                        }
-                    } else {
-                        selectedShape.x = selectedShape.resetX;
-                        selectedShape.y = selectedShape.resetY;
-                        selectedShape.angle = 0; // Reset the rotation angle if not in the lock area
-                    }
+                // Allow some tolerance for the correct orientation
+                if (angleDifference < 0.1) {
+                  // Piece is in the correct orientation
+                  selectedShape.x = selectedShape.lockX;
+                  selectedShape.y = selectedShape.lockY;
+                  selectedShape.isLocked = true;
+                  lockedPieces++;
+                  lastValidX = selectedShape.lockX;
+                  lastValidY = selectedShape.lockY;
+                  lastValidAngle = 0;
+                } else {
+                  // Piece is in the wrong orientation
+                  selectedShape.x = lastValidX;
+                  selectedShape.y = lastValidY;
+                  selectedShape.angle = lastValidAngle;
                 }
+              } else {
+                // Piece is not in the lock area
+                selectedShape.x = lastValidX;
+                selectedShape.y = lastValidY;
+                selectedShape.angle = lastValidAngle;
+              }
+            } else {
+              // Piece is outside the playfield
+              selectedShape.x = lastValidX;
+              selectedShape.y = lastValidY;
+              selectedShape.angle = lastValidAngle;
             }
+          }
     
-            selectedShape = null;
-            drawShapes();
+          selectedShape = null;
+          drawShapes();
         }
-    }
+      }
     
     
     
