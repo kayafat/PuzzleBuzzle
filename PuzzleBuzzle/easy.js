@@ -147,8 +147,7 @@ window.onload = () => {
   canvas.addEventListener("touchend", handleTouchEnd);
  
   let secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY;
-let rotationThreshold = 2; // Schwellenwert für die Rotation in cm, kann angepasst werden
-let rotationSpeed = 0.01; // Geschwindigkeit der Drehung, kann angepasst werden
+let rotationThreshold = 50; // Schwellenwert für die Rotation in Pixeln, kann angepasst werden
 
 function handleTouchStart(event) {
     event.preventDefault();
@@ -174,7 +173,6 @@ function handleTouchStart(event) {
                     startY = touchStartY - shape.y;
                 }
                 break;
-                //test
             }
         }
     }
@@ -203,9 +201,9 @@ function handleTouchMove(event) {
             if (swipeDistance >= rotationThreshold) {
                 const swipeDirection = getSwipeDirection(secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY);
                 if (swipeDirection === 'right') {
-                    selectedShape.angle += rotationSpeed;
+                    selectedShape.angle += Math.PI / 2;
                 } else if (swipeDirection === 'left') {
-                    selectedShape.angle -= rotationSpeed;
+                    selectedShape.angle -= Math.PI / 2;
                 }
 
                 drawShapes();
