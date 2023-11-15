@@ -267,7 +267,7 @@ window.onload = () => {
         return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
     }
   
-  
+  /*
   canvas.addEventListener('mousedown', (event) => {
   const mouseX = event.clientX - offset_x;
   const mouseY = event.clientY - offset_y;
@@ -329,7 +329,7 @@ window.onload = () => {
       drawShapes(); // Das aktualisierte Bild zeichnen
   }
   });
-  
+  */
   // Anzeige ob man gewonnen oder verloren hat wenn der Timer abläuft
   
   function showGameOverModal() {
