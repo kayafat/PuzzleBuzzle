@@ -77,16 +77,16 @@ let rotationStartY = 0;
   
   // Definition der Lock-Positionen für jedes Bild
   const lockPositions = [
-    { x: rectX, y: rectY, orientation: 0 },
-    { x: rectX + xy, y: rectY, orientation: Math.PI / 2 },
-    { x: rectX + (2 * xy), y: rectY, orientation: Math.PI },
-    { x: rectX, y: rectY + xy, orientation: -Math.PI / 2 },
-    { x: rectX + xy, y: rectY + xy, orientation: 0 },
-    { x: rectX + (2 * xy), y: rectY + xy, orientation: Math.PI / 2 },
-    { x: rectX, y: rectY + (2 * xy), orientation: -Math.PI },
-    { x: rectX + xy, y: rectY + (2 * xy), orientation: -Math.PI / 2 },
-    { x: rectX + (2 * xy), y: rectY + (2 * xy), orientation: 0 },
-];
+    { x: rectX, y: rectY },
+    { x: rectX + xy, y: rectY },
+    { x: rectX + (2 * xy), y: rectY },
+    { x: rectX, y: rectY + xy },
+    { x: rectX + xy, y: rectY + xy },
+    { x: rectX + (2 * xy), y: rectY + xy },
+    { x: rectX, y: rectY + (2 * xy) },
+    { x: rectX + xy, y: rectY + (2 * xy) },
+    { x: rectX + (2 * xy), y: rectY + (2 * xy) },
+  ];
   
   canvas.addEventListener("touchstart", handleTouchStart);
   canvas.addEventListener("touchmove", handleTouchMove);
@@ -232,8 +232,7 @@ let rotationStartY = 0;
 
     function handleTouchEnd(event) {
         event.preventDefault();
-    
-        if (event.touches.length !== 2 && isDragging && selectedShape && !selectedShape.isLocked) {
+        if (event.touches.length !== 2) {
             isDragging = false;
     
             if (selectedShape) {
@@ -249,53 +248,37 @@ let rotationStartY = 0;
                     touchEndY <= rectY + rectHeight
                 ) {
                     // Check if the piece is also in the lock area
-                    const lockPosition = getClosestLockPosition(selectedShape);
-    
-                    // Updated condition for locking and resetting
                     if (
-                        touchEndX >= lockPosition.x &&
-                        touchEndX <= lockPosition.x + xy &&
-                        touchEndY >= lockPosition.y &&
-                        touchEndY <= lockPosition.y + xy &&
-                        isOrientationCorrect(selectedShape, lockPosition.orientation)
+                        touchEndX >= rectX &&
+                        touchEndX <= rectX + rectWidth &&
+                        touchEndY >= rectY &&
+                        touchEndY <= rectY + rectHeight
                     ) {
-                        // Lock the piece
-                        selectedShape.x = lockPosition.x;
-                        selectedShape.y = lockPosition.y;
-                        selectedShape.isLocked = true;
-                        lockedPieces++;
-    
-                        if (lockedPieces === shapes.length) {
-                            showGameOverModal();
+                        // Check if the piece is also in the lock area
+                        if (
+                            touchEndX <= selectedShape.lockX + xy &&
+                            touchEndX >= selectedShape.lockX &&
+                            touchEndY >= selectedShape.lockY &&
+                            touchEndY <= selectedShape.lockY + xy
+                        ) {
+                            selectedShape.x = selectedShape.lockX;
+                            selectedShape.y = selectedShape.lockY;
+                            selectedShape.isLocked = true;
+                            lockedPieces++;
+                            if (lockedPieces === shapes.length) {
+                                showGameOverModal();
+                            }
+                        } else {
+                            selectedShape.x = selectedShape.resetX;
+                            selectedShape.y = selectedShape.resetY;
                         }
-                    } else {
-                        // Reset the piece to its initial position
-                        selectedShape.x = selectedShape.resetX;
-                        selectedShape.y = selectedShape.resetY;
                     }
                 }
-            }
+            }                    
     
             selectedShape = null;
             drawShapes();
         }
-    }
-    
-    
-    
-    function getClosestLockPosition(shape) {
-        // Find the lock position that is closest to the current shape's position
-        return lockPositions.reduce((closest, current) => {
-            const distanceToClosest = Math.hypot(closest.x - shape.x, closest.y - shape.y);
-            const distanceToCurrent = Math.hypot(current.x - shape.x, current.y - shape.y);
-            return distanceToCurrent < distanceToClosest ? current : closest;
-        });
-    }
-    
-    function isOrientationCorrect(shape, expectedOrientation) {
-        // Check if the shape's current angle matches the expected orientation
-        const angleDifference = Math.abs(shape.angle - expectedOrientation);
-        return angleDifference < 0.1; // Adjust the threshold as needed
     }
     
   
