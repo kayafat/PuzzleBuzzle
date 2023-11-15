@@ -145,9 +145,10 @@ window.onload = () => {
   canvas.addEventListener("touchstart", handleTouchStart);
   canvas.addEventListener("touchmove", handleTouchMove);
   canvas.addEventListener("touchend", handleTouchEnd);
+ 
   let secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY;
-  
-let rotationThreshold = 50; // Schwellenwert für die Rotation, kann angepasst werden
+let rotationThreshold = 2; // Schwellenwert für die Rotation in cm, kann angepasst werden
+let rotationSpeed = 0.01; // Geschwindigkeit der Drehung, kann angepasst werden
 
 function handleTouchStart(event) {
     event.preventDefault();
@@ -197,15 +198,18 @@ function handleTouchMove(event) {
             secondTouchEndY = (touch1.clientY + touch2.clientY) / 2;
 
             // Check the direction of the second swipe and rotate accordingly
-            const swipeDirection = getSwipeDirection(secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY);
-            if (swipeDirection === 'left') {
-                selectedShape.angle -= rotationStep;
-            } else if (swipeDirection === 'right') {
-                selectedShape.angle += rotationStep;
-            }
+            const swipeDistance = Math.sqrt(Math.pow((secondTouchEndX - secondTouchStartX), 2) + Math.pow((secondTouchEndY - secondTouchStartY), 2));
+            if (swipeDistance >= rotationThreshold) {
+                const swipeDirection = getSwipeDirection(secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY);
+                if (swipeDirection === 'right') {
+                    selectedShape.angle += rotationSpeed;
+                } else if (swipeDirection === 'left') {
+                    selectedShape.angle -= rotationSpeed;
+                }
 
-            drawShapes();
-            return;
+                drawShapes();
+                return;
+            }
         }
 
         // Move the shape
@@ -236,6 +240,7 @@ function getSwipeDirection(startX, startY, endX, endY) {
         return 'down';
     }
 }
+
  
 
     function handleTouchEnd(event) {
