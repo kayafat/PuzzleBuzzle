@@ -229,7 +229,7 @@ function getSwipeDirection(startX, startY, endX, endY) {
     const deltaX = endX - startX;
     const deltaY = endY - startY;
     const angle = Math.atan2(deltaY, deltaX);
-    const angleInDegrees = angle * (Math.PI / 2);
+    const angleInDegrees = angle * (180 / Math.PI);
 
     if (angleInDegrees >= -45 && angleInDegrees <= 45) {
         return 'right';
