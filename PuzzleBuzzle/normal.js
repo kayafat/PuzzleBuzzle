@@ -10,7 +10,7 @@ window.onload = () => {
   // Design
     
     // Größe eines Puzzlestücks
-    const xy = 500 / 3;
+    const xy = 500 / 5;
     // Breite und Höhe des Rechtecks 3x3
     const rectWidth = 500;
     const rectHeight = 500;
@@ -25,7 +25,7 @@ window.onload = () => {
     const conY = rectHeight + 170;
     
     // Countdown-Variablen
-    let countdown = 60; // Startzeit in Sekunden
+    let countdown = 240; // Startzeit in Sekunden
     let countdownInterval; // Variable für das Intervall
     let lockedPieces = 0; // Anzahl für eingerastete Puzzleteile
     
@@ -422,8 +422,8 @@ function isMouseInShape(x, y, shape) {
     
     // Spielfeld Gitter
     
-          const cellHeight = rectHeight / 3;
-      for (let i = 1; i < 3; i++) {
+          const cellHeight = rectHeight / 5;
+      for (let i = 1; i < 5; i++) {
           const y = rectY + i * cellHeight;
           ctx.beginPath();
           ctx.moveTo(rectX, y);
@@ -431,8 +431,8 @@ function isMouseInShape(x, y, shape) {
           ctx.strokeStyle = "grey";
           ctx.stroke();
       }
-      const cellWidth = rectWidth / 3;
-      for (let i = 1; i < 3; i++) {
+      const cellWidth = rectWidth / 5;
+      for (let i = 1; i < 5; i++) {
           const x = rectX + i * cellWidth;
           ctx.beginPath();
           ctx.moveTo(x, rectY);
@@ -461,10 +461,10 @@ function isMouseInShape(x, y, shape) {
                   ctx.beginPath();
                   ctx.lineWidth = "2";
                   ctx.strokeStyle = "black";
-                  ctx.rect(rectX + 3* xy + 50, rectY, 75, 75);
+                  ctx.rect(rectX + 5* xy + 20, rectY, 200, 200);
                   ctx.stroke();
           
-                  ctx.drawImage(image2, rectX + 3* xy + 50, rectY, 75, 75);
+                  ctx.drawImage(image2, rectX + 3* xy + 20, rectY, 200, 200);
               };     
     }
     
