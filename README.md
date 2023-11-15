@@ -1,10 +1,7 @@
 # PuzzleBuzzle
 A game where you have to complete a puzzle!
 
-To play the game, make sure to choose on which platform you want to play.
-You can either play on your PC or on your mobile device (iPad recommended)
-
-On PC you can simply download the folder and open the index.html. Therefore you can easily play the game and choose your difficulty.
+The game offers 3 difficulties (Easy, Normal, Hard)
 
 To play on mobile devices:   
 	
@@ -16,7 +13,7 @@ To play on mobile devices:
 
 		https://glitch.com/edit/#!/insidious-waiting-pram?path=README.md%3A1%3A0
   
- 3. Choose Settings on the left of the screen
+ 3. Once you are on glitch.com choose Settings on the left of the screen
     
 		-> New Project
 		-> Import from GitHub (At the bottom of the opened window)
@@ -28,6 +25,4 @@ To play on mobile devices:
      
   7. Choose the PuzzleBuzzle Folder
   
-  8. For the best experience, we recommend to press F11 + F5 once, to play the game in fullscreen-mode.
-  
-  9. Enjoy Playing!
+  8. Enjoy Playing!
