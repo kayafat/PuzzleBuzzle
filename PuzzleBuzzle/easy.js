@@ -11,23 +11,21 @@ window.onload = () => {
     
     // Größe eines Puzzlestücks
     const xy = 500 / 3;
-    // Breite und Höhe des Rechtecks 3x3
+    // Breite und Höhe des Rechtecks 3x3 bzw. Spielfeld
     const rectWidth = 500;
     const rectHeight = 500;
-    // Berechne die Position des Rechtecks, um es in der Mitte des Canvas zu platzieren
+    // Berechne die Position des Spielfelds, um es in der Mitte des Canvas zu platzieren
     const rectX = (canvas.width - rectWidth) / 2;
     const rectY = (canvas.height - rectHeight) / 4;
-    // Breite und Höhe des Rechtecks 3x3
- //   const conWidth = 400;
       
-    // Countdown-Variablen
+  // Countdown-Variablen
+
     let countdown = 60; // Startzeit in Sekunden
     let countdownInterval; // Variable für das Intervall
     let lockedPieces = 0; // Anzahl für eingerastete Puzzleteile
     
-  // Zurück Button
+  // Zurück Button, um zur Startseite zu gelangen
   
-    
     document.getElementById("goback").addEventListener("click", function() {
         // Weiterleitung zur Start-Spielseite
         window.location.href = "index.html";
@@ -102,10 +100,10 @@ window.onload = () => {
     loadedImages.forEach((image, index) => {
         images.push(image);
   
-        // Generiere zufällige x- und y-Koordinaten, wobei x links vom Rechteck liegt
+        // Generiert zufällige x- und y-Koordinaten, wobei y unter dem Spielfeld liegt
         const randomX = getRandomInt(rectX, rectX + rectWidth - xy);
         const randomY = getRandomInt(rectY + rectHeight, canvas.height - (3/2 * xy));
-        const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);
+        const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);    // Diese erscheinen in unterschiedlichen Winkeln
   
         shapes.push({
             x: randomX,
@@ -130,17 +128,16 @@ window.onload = () => {
     
   let touchStartX, touchStartY;
   
-  // Event Listener for the second touch event (swipe to rotate)
+  // Event Listener für den zweiten Touch / Finger (wischen zum Rotieren)
   canvas.addEventListener("touchstart", handleTouchStart);
   canvas.addEventListener("touchmove", handleTouchMove);
   canvas.addEventListener("touchend", handleTouchEnd);
-  //let secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY;
   
   function handleTouchStart(event) {
         event.preventDefault();
 
-        // Check for the second touch
-        // Check for rotation gesture
+        // Prüft den zweiten Touch
+        // Prüft die Rotation
     if (event.touches.length === 2) {
         const touch1 = event.touches[0];
         const touch2 = event.touches[1];
@@ -148,7 +145,6 @@ window.onload = () => {
         rotationStartY = (touch1.clientY + touch2.clientY) / 2;
         rotationStartAngle = Math.atan2(touch1.clientY - touch2.clientY, touch1.clientX - touch2.clientX);
     } else {
-            // Your existing touchstart logic
             const touch = event.touches[0];
             touchStartX = touch.clientX - canvas.getBoundingClientRect().left;
             touchStartY = touch.clientY - canvas.getBoundingClientRect().top;
@@ -170,7 +166,7 @@ window.onload = () => {
     function handleTouchMove(event) {
         event.preventDefault();
     
-        // Check for rotation gesture
+        // Prüft die Rotation
         if (event.touches.length === 2) {
             const touch1 = event.touches[0];
             const touch2 = event.touches[1];
@@ -178,31 +174,30 @@ window.onload = () => {
             const rotationCurrentY = (touch1.clientY + touch2.clientY) / 2;
             const rotationCurrentAngle = Math.atan2(touch1.clientY - touch2.clientY, touch1.clientX - touch2.clientX);
     
-            // Calculate the rotation angle change
+            // Berechnet die Rotation
             const deltaRotation = rotationCurrentAngle - rotationStartAngle;
     
-            // Apply rotation to the selected shape
+            // Addiert die Rotierung zum ausgewählten Puzzlestück
             if (isDragging && selectedShape && !selectedShape.isLocked) {
                 selectedShape.angle += deltaRotation;
                 drawShapes();
             }
     
-            // Update rotation start values for the next move event
+            // Aktualisiert die Rotation für den nächsten Touch - Event
             rotationStartX = rotationCurrentX;
             rotationStartY = rotationCurrentY;
             rotationStartAngle = rotationCurrentAngle;
         } else {
-            // Your existing touch move code
             if (isDragging && selectedShape && !selectedShape.isLocked) {
                 const touch = event.touches[0];
                 const touchX = touch.clientX - canvas.getBoundingClientRect().left;
                 const touchY = touch.clientY - canvas.getBoundingClientRect().top;
     
-                // Move the shape
+                // Bewegt das Puzzlestück
                 selectedShape.x = touchX - startX;
                 selectedShape.y = touchY - startY;
     
-                // Update the start position for the next move event
+                // Aktualisiert den Startpunkt für den nächsten Touch - Event
                 touchStartX = touchX;
                 touchStartY = touchY;
     
@@ -222,43 +217,45 @@ window.onload = () => {
                 const touchEndX = touch.clientX - canvas.getBoundingClientRect().left;
                 const touchEndY = touch.clientY - canvas.getBoundingClientRect().top;
     
-                // Check if the piece is within the playfield
+                // Überprüft, ob das Puzzlestück innerhalb des Spielfeldes ist
                 if (
                     touchEndX >= rectX &&
                     touchEndX <= rectX + rectWidth &&
                     touchEndY >= rectY &&
                     touchEndY <= rectY + rectHeight
                 ) {
-                    // Check if the piece is also in the lock area
+                    // Überprüft, ob es sich in der jeweiligen Lock-Area befindet
                     if (
                         touchEndX <= selectedShape.lockX + xy &&
                         touchEndX >= selectedShape.lockX &&
                         touchEndY >= selectedShape.lockY &&
                         touchEndY <= selectedShape.lockY + xy
                     ) {
-                        // Check if the piece is in the correct orientation
-                        const correctAngle = 0; // Adjust this angle based on your requirement
+                        // Überprüft, ob es den originalen/richtigen Winkel hat
+                        const correctAngle = 0; 
                         const angleDifference = Math.abs(selectedShape.angle - correctAngle);
     
-                        // Allow some tolerance for the correct orientation
-                        if (angleDifference < 0.1) { // You can adjust the tolerance as needed
+                        // Toleranz für Rotation, damit es trotzdem einrastert
+                        if (angleDifference < 0.1) { 
                             selectedShape.x = selectedShape.lockX;
                             selectedShape.y = selectedShape.lockY;
                             selectedShape.isLocked = true;
                             lockedPieces++;
     
-                            // Reset the rotation angle to 0 when the piece is locked
+                            // Setzt den Winkel auf 0 zurück, wenn es eingerastert ist (wegen Toleranzgründen)
                             selectedShape.angle = 0;
     
                             if (lockedPieces === shapes.length) {
                                 showGameOverModal();
                             }
+                        // Ansonsten wird das Puzzlestück oben links zurückgesetzt
                         } else {
                             selectedShape.x = selectedShape.resetX;
                             selectedShape.y = selectedShape.resetY;
                             selectedShape.angle = 0;
                         }
                     } else {
+                        // Ansonsten wird das Puzzlestück oben links zurückgesetzt
                         selectedShape.x = selectedShape.resetX;
                         selectedShape.y = selectedShape.resetY;
                         selectedShape.angle = 0;
@@ -280,24 +277,24 @@ window.onload = () => {
       const modal = document.querySelector('.modal');
       modal.style.display = 'flex';
   
-      // Check if the game is won
+      // Prüft, ob das Spiel gewonnen ist
       if (lockedPieces === shapes.length) {
           modal.innerHTML = `<p style="font-size: 55px; color: white">Congratulations, you've won!</p><button id="retryBtn">Retry</button><button id="menuBtn">Back to Menu</button>`;
-          clearInterval(countdownInterval); // Stop the countdown when the game is won
+          clearInterval(countdownInterval); // Falls gewonnen, stoppe den Countdown
       } else {
           modal.innerHTML = `<p style="font-size: 55px; color: white";>Game Over!</p><button id="retryBtn">Retry</button><button id="menuBtn">Back to Menu</button>`;
       }
   
-      // Add event listeners to the buttons
+      // Add event listeners für die Buttons
       const retryBtn = document.getElementById('retryBtn');
       retryBtn.addEventListener('click', function () {
-          // Reload the page to restart the game
+          // Seite neuladen, um das Spiel neuzustarten
           window.location.reload();
       });
   
       const menuBtn = document.getElementById('menuBtn');
       menuBtn.addEventListener('click', function () {
-          // Redirect to the menu page
+          // Leitet zur Startseite zurück
           window.location.href = "index.html";
       });
   }
@@ -311,11 +308,11 @@ window.onload = () => {
           const image = images[imageIndex];
           
           if (image) {
-              ctx.save(); // Speichern des aktuellen Zeichenkontexts
+              ctx.save(); 
               ctx.translate(shape.x + shape.width / 2, shape.y + shape.height / 2); // In die Mitte des Bildes verschieben
               ctx.rotate(shape.angle); // Drehen des Bildes um den Winkel im Radianten
-              ctx.drawImage(image, -shape.width / 2, -shape.height / 2, shape.width, shape.height); // Zeichnen des Bildes
-              ctx.restore(); // Wiederherstellen des Zeichenkontexts
+              ctx.drawImage(image, -shape.width / 2, -shape.height / 2, shape.width, shape.height); 
+              ctx.restore(); 
           }
       }
   
@@ -325,10 +322,10 @@ window.onload = () => {
   function startCountdown() {
       countdownInterval = setInterval(() => {
           countdown--;
-          drawCountdown(); // Rufe die Funktion auf um die Zeit zu aktuallisieren
+          drawCountdown(); // Rufe die Funktion auf, um die Zeit zu aktuallisieren
           if (countdown === 0) {
-              clearInterval(countdownInterval); // Stoppe die Zeit wenn es 0 erreicht
-              showGameOverModal(); // Ruft die Funktion auf um das modal anzuzeigen (Text)
+              clearInterval(countdownInterval); // Stoppe die Zeit, wenn es 0 erreicht
+              showGameOverModal(); // Ruft die Funktion auf, um das modal anzuzeigen (Text)
           }
       }, 1000); // Aktuallisiere die Zeit alle 1000 millisekunden (1sekunde)
   }
@@ -337,7 +334,7 @@ window.onload = () => {
       const minutes = Math.floor(countdown / 60);
       const seconds = countdown % 60;
   
-      // Aktuallisieren des Bereiches um den Timer nicht überlappt anzuzeigen
+      // Aktuallisieren des Bereiches, um den Timer nicht überlappt anzuzeigen
       ctx.clearRect(canvas.width / 2 - 100, canvas.height - 50, 200, 30);
   
       ctx.font = "30px Arial";
@@ -350,6 +347,8 @@ window.onload = () => {
           ctx.fillText(`Time: ${seconds}s`, canvas.width / 2, canvas.height - 20);
       }
   }
+
+  // Überschriften
   
   function drawPlayfield() {
     ctx.font = "50px Arial";
