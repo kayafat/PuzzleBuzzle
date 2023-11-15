@@ -44,7 +44,7 @@ window.onload = () => {
   const images = [];
   let isDragging = false;
   let startX, startY;
-  let rotationStep = Math.PI / 360; 
+  let rotationStep = Math.PI / 720; 
   let selectedShape = null;
   
   function getRandomInt(min, max) {
@@ -198,6 +198,15 @@ window.onload = () => {
                 return;
             }
     
+            // Determine the direction of the swipe and rotate accordingly
+            if (deltaX > 0) {
+                // Swipe from left to right, rotate to the right
+                selectedShape.angle += rotationStep;
+            } else {
+                // Swipe from right to left, rotate to the left
+                selectedShape.angle -= rotationStep;
+            }
+    
             // Move the shape
             selectedShape.x = touchX - startX;
             selectedShape.y = touchY - startY;
@@ -208,7 +217,7 @@ window.onload = () => {
     
             drawShapes();
         }
-    } 
+    }
 
     function handleTouchEnd(event) {
         event.preventDefault();
