@@ -360,7 +360,7 @@ window.onload = () => {
     ctx.font = "20px Arial";
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
-    ctx.fillText("By Fatih & Selin Kaya", innerWidth / 2, 90);
+    ctx.fillText("By Fatih & Selin Kaya", innerWidth / 2, 120);
   
   // Spielfeld
   
