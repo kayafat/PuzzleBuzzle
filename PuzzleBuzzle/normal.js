@@ -1,78 +1,79 @@
 window.onload = () => {
 
-  const canvas = document.querySelector("canvas");
-  const ctx = canvas.getContext("2d");
+    const canvas = document.querySelector("canvas");
+    const ctx = canvas.getContext("2d");
+    
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
   
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-
-
-// Design
   
-  const xy = 500 / 5;
-  // Breite und Höhe des Rechtecks 3x3
-  const rectWidth = 500;
-  const rectHeight = 500;
-  // Berechne die Position des Rechtecks, um es in der Mitte des Canvas zu platzieren
-  const rectX = (canvas.width - rectWidth) / 2;
-  const rectY = (canvas.height - rectHeight) / 4;
-  // Breite und Höhe des Rechtecks 3x3
-  const conWidth = 400;
-  const conHeight = 100;
-  // Berechne die Position des Rechtecks, um es in der Mitte des Canvas zu platzieren
-  const conX = (canvas.width - conWidth) / 2;
-  const conY = rectHeight + 170;
+  // Design
+    
+    // Größe eines Puzzlestücks
+    const xy = 500 / 3;
+    // Breite und Höhe des Rechtecks 3x3
+    const rectWidth = 500;
+    const rectHeight = 500;
+    // Berechne die Position des Rechtecks, um es in der Mitte des Canvas zu platzieren
+    const rectX = (canvas.width - rectWidth) / 2;
+    const rectY = (canvas.height - rectHeight) / 4;
+    // Breite und Höhe des Rechtecks 3x3
+    const conWidth = 400;
+    const conHeight = 100;
+    // Berechne die Position des Rechtecks, um es in der Mitte des Canvas zu platzieren
+    const conX = (canvas.width - conWidth) / 2;
+    const conY = rectHeight + 170;
+    
+    // Countdown-Variablen
+    let countdown = 60; // Startzeit in Sekunden
+    let countdownInterval; // Variable für das Intervall
+    let lockedPieces = 0; // Anzahl für eingerastete Puzzleteile
+    
+  // Zurück Button
   
-  // Countdown-Variablen
-  let countdown = 240; // Startzeit in Sekunden
-  let countdownInterval; // Variable für das Intervall
-  let lockedPieces = 0; // Anzahl für eingerastete Puzzleteile
-
-// Zurück Button
-
+    
+    document.getElementById("goback").addEventListener("click", function() {
+        // Weiterleitung zur Start-Spielseite
+        window.location.href = "index.html";
+    });
   
-  document.getElementById("goback").addEventListener("click", function() {
-      // Weiterleitung zur Start-Spielseite
-      window.location.href = "index.html";
-  });
+  
+  // Puzzleteile
+  
+  const shapes = [];
+  const images = [];
+  let isDragging = false;
+  let startX, startY;
+  let rotationStep = Math.PI / 2; 
+  let selectedShape = null;
 
-
-// Puzzleteile
-
-const shapes = [];
-const images = [];
-let isDragging = false;
-let startX, startY;
-let rotationStep = Math.PI / 2; 
-let selectedShape = null;
-
-let rotationStartAngle = 0;
-let rotationStartX = 0;
-let rotationStartY = 0;
-
-function getRandomInt(min, max) {
-return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getOffset() {
-const canvasOffset = canvas.getBoundingClientRect();
-offset_x = canvasOffset.left;
-offset_y = canvasOffset.top;
-}
-
-window.addEventListener('scroll', getOffset);
-window.addEventListener('resize', getOffset);
-getOffset();
-
-// Funktion zum Laden eines Bildes und Rückgabe einer Promise
-function loadImage(imageSrc) {
-  return new Promise((resolve, reject) => {
-      const image = new Image();
-      image.src = imageSrc;
-      image.onload = () => resolve(image);
-      image.onerror = reject;
-  });
-}
+  let rotationStartAngle = 0;
+  let rotationStartX = 0;
+  let rotationStartY = 0;
+  
+  function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  
+  function getOffset() {
+  const canvasOffset = canvas.getBoundingClientRect();
+  offset_x = canvasOffset.left;
+  offset_y = canvasOffset.top;
+  }
+  
+  window.addEventListener('scroll', getOffset);
+  window.addEventListener('resize', getOffset);
+  getOffset();
+  
+  // Funktion zum Laden eines Bildes und Rückgabe einer Promise
+  function loadImage(imageSrc) {
+    return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.src = imageSrc;
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+    });
+  }
 
 // Definition der Lock-Positionen für jedes Bild
 const lockPositions = [
@@ -161,11 +162,6 @@ Promise.all([
 .catch((error) => {
   console.error('Fehler beim Laden der Bilder:', error);
 });
-
-
-function isMouseInShape(x, y, shape) {
-return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
-}
 
 
 function isMouseInShape(x, y, shape) {
@@ -321,152 +317,155 @@ function isMouseInShape(x, y, shape) {
               drawShapes();
           }
       }
-
-// Anzeige ob man gewonnen oder verloren hat wenn der Timer abläuft
-
-function showGameOverModal() {
-    // Anzeigen des Modals
-    const modal = document.querySelector('.modal');
-    modal.style.display = 'flex';
-
-    // Check if the game is won
-    if (lockedPieces === shapes.length) {
-        modal.innerHTML = `<p style="font-size: 55px; color: white">Congratulations, you've won!</p><button id="retryBtn">Retry</button><button id="menuBtn">Back to Menu</button>`;
-        clearInterval(countdownInterval); // Stop the countdown when the game is won
-    } else {
-        modal.innerHTML = `<p style="font-size: 55px; color: white";>Game Over!</p><button id="retryBtn">Retry</button><button id="menuBtn">Back to Menu</button>`;
-    }
-
-    // Add event listeners to the buttons
-    const retryBtn = document.getElementById('retryBtn');
-    retryBtn.addEventListener('click', function () {
-        // Reload the page to restart the game
-        window.location.reload();
-    });
-
-    const menuBtn = document.getElementById('menuBtn');
-    menuBtn.addEventListener('click', function () {
-        // Redirect to the menu page
-        window.location.href = "index.html";
-    });
-}
-
-function drawShapes() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawPlayfield();
     
-    for (const shape of shapes) {
-        const imageIndex = shape.imageIndex;
-        const image = images[imageIndex];
+      function isTouchInShape(x, y, shape) {
+          return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
+      }
+    
+    function showGameOverModal() {
+        // Anzeigen des Modals
+        const modal = document.querySelector('.modal');
+        modal.style.display = 'flex';
+    
+        // Check if the game is won
+        if (lockedPieces === shapes.length) {
+            modal.innerHTML = `<p style="font-size: 55px; color: white">Congratulations, you've won!</p><button id="retryBtn">Retry</button><button id="menuBtn">Back to Menu</button>`;
+            clearInterval(countdownInterval); // Stop the countdown when the game is won
+        } else {
+            modal.innerHTML = `<p style="font-size: 55px; color: white";>Game Over!</p><button id="retryBtn">Retry</button><button id="menuBtn">Back to Menu</button>`;
+        }
+    
+        // Add event listeners to the buttons
+        const retryBtn = document.getElementById('retryBtn');
+        retryBtn.addEventListener('click', function () {
+            // Reload the page to restart the game
+            window.location.reload();
+        });
+    
+        const menuBtn = document.getElementById('menuBtn');
+        menuBtn.addEventListener('click', function () {
+            // Redirect to the menu page
+            window.location.href = "index.html";
+        });
+    }
+    
+    function drawShapes() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawPlayfield();
         
-        if (image) {
-            ctx.save(); // Speichern des aktuellen Zeichenkontexts
-            ctx.translate(shape.x + shape.width / 2, shape.y + shape.height / 2); // In die Mitte des Bildes verschieben
-            ctx.rotate(shape.angle); // Drehen des Bildes um den Winkel im Radianten
-            ctx.drawImage(image, -shape.width / 2, -shape.height / 2, shape.width, shape.height); // Zeichnen des Bildes
-            ctx.restore(); // Wiederherstellen des Zeichenkontexts
+        for (const shape of shapes) {
+            const imageIndex = shape.imageIndex;
+            const image = images[imageIndex];
+            
+            if (image) {
+                ctx.save(); // Speichern des aktuellen Zeichenkontexts
+                ctx.translate(shape.x + shape.width / 2, shape.y + shape.height / 2); // In die Mitte des Bildes verschieben
+                ctx.rotate(shape.angle); // Drehen des Bildes um den Winkel im Radianten
+                ctx.drawImage(image, -shape.width / 2, -shape.height / 2, shape.width, shape.height); // Zeichnen des Bildes
+                ctx.restore(); // Wiederherstellen des Zeichenkontexts
+            }
         }
-    }
-
-    drawCountdown(); // Zeige die Zeit am Ende des renderns an
-}
-
-function startCountdown() {
-    countdownInterval = setInterval(() => {
-        countdown--;
-        drawCountdown(); // Rufe die Funktion auf um die Zeit zu aktuallisieren
-        if (countdown === 0) {
-            clearInterval(countdownInterval); // Stoppe die Zeit wenn es 0 erreicht
-            showGameOverModal(); // Ruft die Funktion auf um das modal anzuzeigen (Text)
-        }
-    }, 1000); // Aktuallisiere die Zeit alle 1000 millisekunden (1sekunde)
-}
-
-function drawCountdown() {
-    const minutes = Math.floor(countdown / 60);
-    const seconds = countdown % 60;
-
-    // Aktuallisieren des Bereiches um den Timer nicht überlappt anzuzeigen
-    ctx.clearRect(canvas.width / 2 - 100, canvas.height - 50, 200, 30);
-
-    ctx.font = "30px Arial";
-    ctx.fillStyle = "white";
-    ctx.textAlign = "center";
-
-    if (minutes > 0) {
-        ctx.fillText(`Time: ${minutes}m ${seconds}s`, canvas.width / 2, canvas.height - 20);
-    } else {
-        ctx.fillText(`Time: ${seconds}s`, canvas.width / 2, canvas.height - 20);
-    }
-}
-
-function drawPlayfield() {
-  ctx.font = "50px Arial";
-  ctx.fillStyle = "white";
-  ctx.textAlign = "center";
-  ctx.fillText("PuzzleBuzzle", innerWidth / 2, 70);
-
-  ctx.font = "20px Arial";
-  ctx.fillStyle = "white";
-  ctx.textAlign = "center";
-  ctx.fillText("By Fatih & Selin Kaya", innerWidth / 2, 940);
-
-// Spielfeld
-
-      ctx.beginPath();
-      ctx.lineWidth = "3";
-      ctx.strokeStyle = "white";
-      ctx.rect(rectX, rectY, rectWidth, rectHeight);    
-      ctx.fill();
-      ctx.fillStyle = "white";
-      ctx.strokeStyle = "black";
-      ctx.stroke();
     
-// Spielfeld Gitter
-
-      const cellHeight = rectHeight / 5;
-  for (let i = 1; i < 5; i++) {
-      const y = rectY + i * cellHeight;
-      ctx.beginPath();
-      ctx.moveTo(rectX, y);
-      ctx.lineTo(rectX + rectWidth, y);
-      ctx.strokeStyle = "grey";
-      ctx.stroke();
-  }
-  const cellWidth = rectWidth / 5;
-  for (let i = 1; i < 5; i++) {
-      const x = rectX + i * cellWidth;
-      ctx.beginPath();
-      ctx.moveTo(x, rectY);
-      ctx.lineTo(x, rectY + rectHeight);
-      ctx.strokeStyle = "grey";
-      ctx.stroke();
-  }
-  
-  // Kleines Rechteck unten (Platzhalter für eventuellen Countdown)
-
-      ctx.beginPath();
-      ctx.lineWidth = "2";
-      ctx.strokeStyle = "white";
-      ctx.rect(conX, conY, conWidth, conHeight);  
-      ctx.stroke();
-
-    // Rechteck für das Lösungsbild
-
-      const imageUrlForRectangle = './images/blume2.jpg';
-
-      const image2 = new Image();
-          image2.src = imageUrlForRectangle;
-          image2.onload = () => {
-
-              ctx.beginPath();
-              ctx.lineWidth = "2";
-              ctx.strokeStyle = "black";
-              ctx.rect(rectX + 5* xy + 20, rectY, 200, 200);
-              ctx.stroke();
-      
-              ctx.drawImage(image2, rectX + 5* xy + 20, rectY, 200, 200);
-          };     
-}
-
-};
+        drawCountdown(); // Zeige die Zeit am Ende des renderns an
+    }
+    
+    function startCountdown() {
+        countdownInterval = setInterval(() => {
+            countdown--;
+            drawCountdown(); // Rufe die Funktion auf um die Zeit zu aktuallisieren
+            if (countdown === 0) {
+                clearInterval(countdownInterval); // Stoppe die Zeit wenn es 0 erreicht
+                showGameOverModal(); // Ruft die Funktion auf um das modal anzuzeigen (Text)
+            }
+        }, 1000); // Aktuallisiere die Zeit alle 1000 millisekunden (1sekunde)
+    }
+    
+    function drawCountdown() {
+        const minutes = Math.floor(countdown / 60);
+        const seconds = countdown % 60;
+    
+        // Aktuallisieren des Bereiches um den Timer nicht überlappt anzuzeigen
+        ctx.clearRect(canvas.width / 2 - 100, canvas.height - 50, 200, 30);
+    
+        ctx.font = "30px Arial";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+    
+        if (minutes > 0) {
+            ctx.fillText(`Time: ${minutes}m ${seconds}s`, canvas.width / 2, canvas.height - 20);
+        } else {
+            ctx.fillText(`Time: ${seconds}s`, canvas.width / 2, canvas.height - 20);
+        }
+    }
+    
+    function drawPlayfield() {
+      ctx.font = "50px Arial";
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
+      ctx.fillText("PuzzleBuzzle", innerWidth / 2, 70);
+    
+      ctx.font = "20px Arial";
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
+      ctx.fillText("By Fatih & Selin Kaya", innerWidth / 2, 940);
+    
+    // Spielfeld
+    
+          ctx.beginPath();
+          ctx.lineWidth = "3";
+          ctx.strokeStyle = "white";
+          ctx.rect(rectX, rectY, rectWidth, rectHeight);     
+          ctx.fill();
+          ctx.fillStyle = "white";
+          ctx.strokeStyle = "black";
+          ctx.stroke();
+    
+    // Spielfeld Gitter
+    
+          const cellHeight = rectHeight / 3;
+      for (let i = 1; i < 3; i++) {
+          const y = rectY + i * cellHeight;
+          ctx.beginPath();
+          ctx.moveTo(rectX, y);
+          ctx.lineTo(rectX + rectWidth, y);
+          ctx.strokeStyle = "grey";
+          ctx.stroke();
+      }
+      const cellWidth = rectWidth / 3;
+      for (let i = 1; i < 3; i++) {
+          const x = rectX + i * cellWidth;
+          ctx.beginPath();
+          ctx.moveTo(x, rectY);
+          ctx.lineTo(x, rectY + rectHeight);
+          ctx.strokeStyle = "grey";
+          ctx.stroke();
+      }
+    
+      // Kleines Rechteck unten (Platzhalter für eventuellen Countdown)
+    
+          ctx.beginPath();
+          ctx.lineWidth = "2";
+          ctx.strokeStyle = "white";
+          ctx.rect(conX, conY, conWidth, conHeight);  
+          ctx.stroke();
+    
+    
+      // Rechteck für das Lösungsbild
+    
+          const imageUrlForRectangle = './images/bild2.jpg';
+    
+          const image2 = new Image();
+              image2.src = imageUrlForRectangle;
+              image2.onload = () => {
+    
+                  ctx.beginPath();
+                  ctx.lineWidth = "2";
+                  ctx.strokeStyle = "black";
+                  ctx.rect(rectX + 3* xy + 50, rectY, 75, 75);
+                  ctx.stroke();
+          
+                  ctx.drawImage(image2, rectX + 3* xy + 50, rectY, 75, 75);
+              };     
+    }
+    
+    };
