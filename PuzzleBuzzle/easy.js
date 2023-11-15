@@ -44,7 +44,7 @@ window.onload = () => {
   const images = [];
   let isDragging = false;
   let startX, startY;
-  let rotationStep = Math.PI / 2; 
+  let rotationStep = Math.PI / 1080; 
   let selectedShape = null;
   
   function getRandomInt(min, max) {
