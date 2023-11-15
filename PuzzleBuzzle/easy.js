@@ -44,7 +44,7 @@ window.onload = () => {
   const images = [];
   let isDragging = false;
   let startX, startY;
-  let rotationStep = (Math.PI / 2) *0.1; 
+  let rotationStep = Math.PI / 2; 
   let selectedShape = null;
   
   function getRandomInt(min, max) {
@@ -182,45 +182,42 @@ window.onload = () => {
             const touch = event.touches[0];
             const touchX = touch.clientX - canvas.getBoundingClientRect().left;
             const touchY = touch.clientY - canvas.getBoundingClientRect().top;
-
+    
             // Calculate the change in position
             const deltaX = touchX - touchStartX;
             const deltaY = touchY - touchStartY;
-
+    
             // Check for the second touch
             if (event.touches.length === 2) {
                 const touch1 = event.touches[0];
                 const touch2 = event.touches[1];
-                secondTouchEndX = (touch1.clientX + touch2.clientX) / 2;
-                secondTouchEndY = (touch1.clientY + touch2.clientY) / 2;
-
+                const newSecondTouchX = (touch1.clientX + touch2.clientX) / 2;
+                const newSecondTouchY = (touch1.clientY + touch2.clientY) / 2;
+    
                 // Calculate the angle based on the change in position of the second touch
-                const deltaSecondX = secondTouchEndX - secondTouchStartX;
-                const deltaSecondY = secondTouchEndY - secondTouchStartY;
-                let angle = Math.atan2(deltaSecondY, deltaSecondX);
-
-                // Snap the angle to the nearest 90 degrees
-                angle = Math.round(angle / (Math.PI / 2)) * (Math.PI / 2);
-
-                // Update the shape's angle
-                selectedShape.angle = angle;
-
+                const deltaSecondX = newSecondTouchX - secondTouchStartX;
+                const deltaSecondY = newSecondTouchY - secondTouchStartY;
+                const angleChange = Math.atan2(deltaSecondY, deltaSecondX);
+    
+                // Update the shape's angle based on the angle change
+                selectedShape.angle += angleChange;
+    
                 // Update the start position for the next move event
-                secondTouchStartX = secondTouchEndX;
-                secondTouchStartY = secondTouchEndY;
-
+                secondTouchStartX = newSecondTouchX;
+                secondTouchStartY = newSecondTouchY;
+    
                 drawShapes();
                 return;
             }
-
+    
             // Move the shape
             selectedShape.x = touchX - startX;
             selectedShape.y = touchY - startY;
-
+    
             // Update the start position for the next move event
             touchStartX = touchX;
             touchStartY = touchY;
-
+    
             drawShapes();
         }
     }
