@@ -207,6 +207,17 @@ function handleTouchMove(event) {
         drawShapes();
     }
 }
+
+function getSwipeDirection(startX, startY, endX, endY) {
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        return (deltaX > 0) ? 'right' : 'left';
+    } else {
+        return (deltaY > 0) ? 'down' : 'up';
+    }
+}
  
 
     function handleTouchEnd(event) {
