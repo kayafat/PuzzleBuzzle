@@ -282,6 +282,7 @@ let rotationStartY = 0;
     }
     
     
+    
     function getClosestLockPosition(shape) {
         // Find the lock position that is closest to the current shape's position
         return lockPositions.reduce((closest, current) => {
