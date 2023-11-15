@@ -77,16 +77,16 @@ let rotationStartY = 0;
   
   // Definition der Lock-Positionen für jedes Bild
   const lockPositions = [
-    { x: rectX, y: rectY },
-    { x: rectX + xy, y: rectY },
-    { x: rectX + (2 * xy), y: rectY },
-    { x: rectX, y: rectY + xy },
-    { x: rectX + xy, y: rectY + xy },
-    { x: rectX + (2 * xy), y: rectY + xy },
-    { x: rectX, y: rectY + (2 * xy) },
-    { x: rectX + xy, y: rectY + (2 * xy) },
-    { x: rectX + (2 * xy), y: rectY + (2 * xy) },
-  ];
+    { x: rectX, y: rectY, orientation: 0 },
+    { x: rectX + xy, y: rectY, orientation: Math.PI / 2 },
+    { x: rectX + (2 * xy), y: rectY, orientation: Math.PI },
+    { x: rectX, y: rectY + xy, orientation: -Math.PI / 2 },
+    { x: rectX + xy, y: rectY + xy, orientation: 0 },
+    { x: rectX + (2 * xy), y: rectY + xy, orientation: Math.PI / 2 },
+    { x: rectX, y: rectY + (2 * xy), orientation: -Math.PI },
+    { x: rectX + xy, y: rectY + (2 * xy), orientation: -Math.PI / 2 },
+    { x: rectX + (2 * xy), y: rectY + (2 * xy), orientation: 0 },
+];
   
   canvas.addEventListener("touchstart", handleTouchStart);
   canvas.addEventListener("touchmove", handleTouchMove);
@@ -112,8 +112,7 @@ let rotationStartY = 0;
         // Generiere zufällige x- und y-Koordinaten, wobei x links vom Rechteck liegt
         const randomX = getRandomInt(rectX - (xy / 2), rectX-2*xy);
         const randomY = getRandomInt(rectY, rectY + rectHeight + xy);
-        //const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);
-        const fixedInitialAngles = [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2];
+        const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);
   
         shapes.push({
             x: randomX,
@@ -126,7 +125,7 @@ let rotationStartY = 0;
             lockY: lockPositions[index].y, 
             resetX: 100,
             resetY: 100,
-            angle: fixedInitialAngles[index],
+            angle: randomAngle,
         });
     });
     drawShapes();
@@ -241,30 +240,26 @@ let rotationStartY = 0;
                 const touchEndX = touch.clientX - canvas.getBoundingClientRect().left;
                 const touchEndY = touch.clientY - canvas.getBoundingClientRect().top;
     
-                // Check if the end position is within the puzzle area
+                // Check if the piece is within the playfield
                 if (
                     touchEndX >= rectX &&
                     touchEndX <= rectX + rectWidth &&
                     touchEndY >= rectY &&
                     touchEndY <= rectY + rectHeight
                 ) {
-                    // Check if the end position is within the lock area with rotation consideration
+                    // Check if the piece is also in the lock area
+                    const lockPosition = getClosestLockPosition(selectedShape);
                     if (
-                        touchEndX <= selectedShape.lockX + xy &&
-                        touchEndX >= selectedShape.lockX &&
-                        touchEndY >= selectedShape.lockY &&
-                        touchEndY <= selectedShape.lockY + xy
+                        touchEndX <= lockPosition.x + xy &&
+                        touchEndX >= lockPosition.x &&
+                        touchEndY >= lockPosition.y &&
+                        touchEndY <= lockPosition.y + xy &&
+                        isOrientationCorrect(selectedShape, lockPosition.orientation)
                     ) {
-                        // Calculate the rotated position
-                        const rotatedX = selectedShape.lockX + (Math.cos(selectedShape.angle) * (selectedShape.x - selectedShape.lockX) - Math.sin(selectedShape.angle) * (selectedShape.y - selectedShape.lockY));
-                        const rotatedY = selectedShape.lockY + (Math.sin(selectedShape.angle) * (selectedShape.x - selectedShape.lockX) + Math.cos(selectedShape.angle) * (selectedShape.y - selectedShape.lockY));
-    
-                        // Set the position and lock the piece
-                        selectedShape.x = rotatedX;
-                        selectedShape.y = rotatedY;
+                        selectedShape.x = lockPosition.x;
+                        selectedShape.y = lockPosition.y;
                         selectedShape.isLocked = true;
                         lockedPieces++;
-    
                         if (lockedPieces === shapes.length) {
                             showGameOverModal();
                         }
@@ -273,11 +268,26 @@ let rotationStartY = 0;
                         selectedShape.y = selectedShape.resetY;
                     }
                 }
-            }                    
+            }
     
             selectedShape = null;
             drawShapes();
         }
+    }
+    
+    function getClosestLockPosition(shape) {
+        // Find the lock position that is closest to the current shape's position
+        return lockPositions.reduce((closest, current) => {
+            const distanceToClosest = Math.hypot(closest.x - shape.x, closest.y - shape.y);
+            const distanceToCurrent = Math.hypot(current.x - shape.x, current.y - shape.y);
+            return distanceToCurrent < distanceToClosest ? current : closest;
+        });
+    }
+    
+    function isOrientationCorrect(shape, expectedOrientation) {
+        // Check if the shape's current angle matches the expected orientation
+        const angleDifference = Math.abs(shape.angle - expectedOrientation);
+        return angleDifference < 0.1; // Adjust the threshold as needed
     }
     
   
