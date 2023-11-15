@@ -256,32 +256,27 @@ window.onload = () => {
                         const angleDifference = Math.abs(selectedShape.angle - correctAngle);
     
                         // Allow some tolerance for the correct orientation
-                        if (angleDifference < 0.1) { // You can adjust the tolerance as needed
+                        if (angleDifference < 0.5) { // You can adjust the tolerance as needed
                             selectedShape.x = selectedShape.lockX;
                             selectedShape.y = selectedShape.lockY;
                             selectedShape.isLocked = true;
                             lockedPieces++;
     
-                            // Reset the rotation angle to the nearest multiple of 90 degrees when the piece is locked
-                            const nearestMultipleOf90 = Math.round(selectedShape.angle / 90) * 90;
-                            selectedShape.angle = nearestMultipleOf90;
+                            // Reset the rotation angle to 0 when the piece is locked
+                            selectedShape.angle = 0;
     
                             if (lockedPieces === shapes.length) {
                                 showGameOverModal();
                             }
                         } else {
-                            // Reset the position and rotation angle based on the current rotation
-                            const nearestMultipleOf90 = Math.round(selectedShape.angle / 90) * 90;
                             selectedShape.x = selectedShape.resetX;
                             selectedShape.y = selectedShape.resetY;
-                            selectedShape.angle = nearestMultipleOf90;
+                            selectedShape.angle = whichAngle(selectedShape.angle); // Reset the rotation angle if not in correct orientation
                         }
                     } else {
-                        // Reset the position and rotation angle based on the current rotation
-                        const nearestMultipleOf90 = Math.round(selectedShape.angle / 90) * 90;
                         selectedShape.x = selectedShape.resetX;
                         selectedShape.y = selectedShape.resetY;
-                        selectedShape.angle = nearestMultipleOf90;
+                        selectedShape.angle = whichAngle(selectedShape.angle); // Reset the rotation angle if not in the lock area
                     }
                 }
             }
@@ -290,7 +285,19 @@ window.onload = () => {
             drawShapes();
         }
     }
-    
+
+    function whichAngle(angle) {
+        if (angle > 1 && angle <= 90) {
+            angle = 90 * Math.Pi / 180;
+        } else if (angle > 90 && angle <= 180) {
+            angle = (2* 90) * Math.Pi / 180;
+        } else if (angle > 180 && angle <= 270) {
+            angle = (3* 90) * Math.Pi / 180;
+        } else {
+            angle = 0;
+        }
+        return angle;
+    }
   
     function isTouchInShape(x, y, shape) {
         return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
