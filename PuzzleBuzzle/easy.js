@@ -262,24 +262,26 @@ window.onload = () => {
                             selectedShape.isLocked = true;
                             lockedPieces++;
     
-                            // Reset the rotation angle to 0 when the piece is locked
-                            // Reset the rotation angle to the normalized angle when the piece is locked
                             // Reset the rotation angle to the nearest multiple of 90 degrees when the piece is locked
-const nearestMultipleOf90 = Math.round(selectedShape.angle / 90) * 90;
-selectedShape.angle = nearestMultipleOf90;
-
+                            const nearestMultipleOf90 = Math.round(selectedShape.angle / 90) * 90;
+                            selectedShape.angle = nearestMultipleOf90;
+    
                             if (lockedPieces === shapes.length) {
                                 showGameOverModal();
                             }
                         } else {
+                            // Reset the position and rotation angle based on the current rotation
+                            const nearestMultipleOf90 = Math.round(selectedShape.angle / 90) * 90;
                             selectedShape.x = selectedShape.resetX;
                             selectedShape.y = selectedShape.resetY;
-                            selectedShape.angle = 0; // Reset the rotation angle if not in correct orientation
+                            selectedShape.angle = nearestMultipleOf90;
                         }
                     } else {
+                        // Reset the position and rotation angle based on the current rotation
+                        const nearestMultipleOf90 = Math.round(selectedShape.angle / 90) * 90;
                         selectedShape.x = selectedShape.resetX;
                         selectedShape.y = selectedShape.resetY;
-                        selectedShape.angle = 0; // Reset the rotation angle if not in the lock area
+                        selectedShape.angle = nearestMultipleOf90;
                     }
                 }
             }
@@ -288,6 +290,7 @@ selectedShape.angle = nearestMultipleOf90;
             drawShapes();
         }
     }
+    
   
     function isTouchInShape(x, y, shape) {
         return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
