@@ -288,16 +288,16 @@ window.onload = () => {
 
     function whichAngle(angle) {
         if (angle > 1 && angle <= 90) {
-            angle = (0*90) * Math.PI / 180;
+            angle = 90 * Math.PI / 180;
         } else if (angle > 90 && angle <= 180) {
-            angle = (1* 90) * Math.PI / 180;
+            angle = (180) * Math.PI / 180;
         } else if (angle > 180 && angle <= 270) {
-            angle = (2* 90) * Math.PI / 180;
+            angle = (270) * Math.PI / 180;
         } else {
-            angle = (3* 90) * Math.PI / 180;;
+            angle = 0;
         }
         return angle;
-    }
+    }    
   
     function isTouchInShape(x, y, shape) {
         return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
