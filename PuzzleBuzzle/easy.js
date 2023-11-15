@@ -289,9 +289,6 @@ let rotationStartY = 0;
             drawShapes();
         }
     }
-    
-    
-    
   
     function isTouchInShape(x, y, shape) {
         return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
