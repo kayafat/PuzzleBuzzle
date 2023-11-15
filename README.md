@@ -8,7 +8,10 @@ On PC you can simply download the folder and open the index.html. Therefore you 
 
 To play on mobile devices: 
   
-	1. copy the following git-repository-url: [https:github](https://github.com/kayafat/PuzzleBuzzle.git)https://github.com/kayafat/PuzzleBuzzle.git
+	
+ 1. copy the following git-repository-url:
+ 
+ [https:github](https://github.com/kayafat/PuzzleBuzzle.git)https://github.com/kayafat/PuzzleBuzzle.git
   
 	2. visit the following website: https://glitch.com/edit/#!/insidious-waiting-pram?path=README.md%3A1%3A0
   
