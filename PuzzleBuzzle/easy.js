@@ -112,7 +112,8 @@ let rotationStartY = 0;
         // Generiere zufällige x- und y-Koordinaten, wobei x links vom Rechteck liegt
         const randomX = getRandomInt(rectX - (xy / 2), rectX-2*xy);
         const randomY = getRandomInt(rectY, rectY + rectHeight + xy);
-        const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);
+        //const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);
+        const fixedInitialAngles = [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2];
   
         shapes.push({
             x: randomX,
@@ -125,7 +126,7 @@ let rotationStartY = 0;
             lockY: lockPositions[index].y, 
             resetX: 100,
             resetY: 100,
-            angle: randomAngle,
+            angle: fixedInitialAngles[index],
         });
     });
     drawShapes();
@@ -240,12 +241,14 @@ let rotationStartY = 0;
                 const touchEndX = touch.clientX - canvas.getBoundingClientRect().left;
                 const touchEndY = touch.clientY - canvas.getBoundingClientRect().top;
     
+                // Check if the end position is within the puzzle area
                 if (
                     touchEndX >= rectX &&
                     touchEndX <= rectX + rectWidth &&
                     touchEndY >= rectY &&
                     touchEndY <= rectY + rectHeight
                 ) {
+                    // Check if the end position is within the lock area with rotation consideration
                     if (
                         touchEndX <= selectedShape.lockX + xy &&
                         touchEndX >= selectedShape.lockX &&
@@ -255,13 +258,13 @@ let rotationStartY = 0;
                         // Calculate the rotated position
                         const rotatedX = selectedShape.lockX + (Math.cos(selectedShape.angle) * (selectedShape.x - selectedShape.lockX) - Math.sin(selectedShape.angle) * (selectedShape.y - selectedShape.lockY));
                         const rotatedY = selectedShape.lockY + (Math.sin(selectedShape.angle) * (selectedShape.x - selectedShape.lockX) + Math.cos(selectedShape.angle) * (selectedShape.y - selectedShape.lockY));
-                
+    
                         // Set the position and lock the piece
                         selectedShape.x = rotatedX;
                         selectedShape.y = rotatedY;
                         selectedShape.isLocked = true;
                         lockedPieces++;
-                
+    
                         if (lockedPieces === shapes.length) {
                             showGameOverModal();
                         }
