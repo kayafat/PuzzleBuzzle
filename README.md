@@ -26,9 +26,9 @@ To play on mobile devices:
   
   4. When the project has been loaded, you can see a "PREVIEW" button at the bottom of your screen.
        
-	4.1 Press the preview Button and go ahead by pressing "Preview in a new window"
+	        4.1 Press the preview Button and go ahead by pressing "Preview in a new window"
        
-	4.2 Choose the PuzzleBuzzle Folder
+	        4.2 Choose the PuzzleBuzzle Folder
   
   5. For the best experience, we recommend to press F11 + F5 once, to play the game in fullscreen-mode.
   
