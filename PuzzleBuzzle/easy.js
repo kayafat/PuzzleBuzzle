@@ -275,14 +275,21 @@ let rotationStartY = 0;
     }
     
     function isCorrectOrientation(shape) {
-        // Add logic here to check if the shape is in the correct orientation
-        // You might need to compare the current angle of the shape with the correct angle
-        // Use a tolerance for small variations in the angle
-        const correctAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180); // Example correct angle
-        const angleTolerance = 0.1; // Tolerance in radians
+        // Example correct angle based on the image index
+        const correctAngle = (shape.imageIndex * 90) * (Math.PI / 180);
     
-        return Math.abs(shape.angle - correctAngle) < angleTolerance;
+        // Tolerance in radians to account for small variations
+        const angleTolerance = 0.1;
+    
+        // Normalize the angles to be in the range [0, 2*PI)
+        const normalizedShapeAngle = (shape.angle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+        const normalizedCorrectAngle = (correctAngle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+    
+        // Check if the absolute difference between angles is within the tolerance
+        return Math.abs(normalizedShapeAngle - normalizedCorrectAngle) < angleTolerance;
     }
+    
+    
     
   
     function isTouchInShape(x, y, shape) {
