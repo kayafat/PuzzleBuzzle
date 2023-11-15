@@ -436,10 +436,10 @@ Promise.all([
                   ctx.beginPath();
                   ctx.lineWidth = "2";
                   ctx.strokeStyle = "black";
-                  ctx.rect(rectX, rectY + rectHeight + 20, 200, 200);
+                  ctx.rect((canvas.width / 2), rectY + rectHeight + 20, 200, 200);
                   ctx.stroke();
           
-                  ctx.drawImage(image2, rectX + 5* xy + 20, rectY, 200, 200);
+                  ctx.drawImage(image2, (canvas.width / 2), rectY + rectHeight + 20, 200, 200);
               };     
     }
     
