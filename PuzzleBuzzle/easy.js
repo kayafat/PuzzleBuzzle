@@ -86,7 +86,7 @@ let rotationStartY = 0;
     { x: rectX, y: rectY + (2 * xy) },
     { x: rectX + xy, y: rectY + (2 * xy) },
     { x: rectX + (2 * xy), y: rectY + (2 * xy) },
-  ];
+];
   
   canvas.addEventListener("touchstart", handleTouchStart);
   canvas.addEventListener("touchmove", handleTouchMove);
@@ -108,12 +108,15 @@ let rotationStartY = 0;
   .then((loadedImages) => {
     loadedImages.forEach((image, index) => {
         images.push(image);
-  
-        // Generiere zufällige x- und y-Koordinaten, wobei x links vom Rechteck liegt
-        const randomX = getRandomInt(rectX - (xy / 2), rectX-2*xy);
-        const randomY = getRandomInt(rectY, rectY + rectHeight + xy);
+
+        // Adjusted random position to align with the grid
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+        const randomX = rectX + col * xy;
+        const randomY = rectY + row * xy;
+
         const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);
-  
+
         shapes.push({
             x: randomX,
             y: randomY,
@@ -121,19 +124,19 @@ let rotationStartY = 0;
             height: xy,
             imageIndex: index,
             isLocked: false,
-            lockX: lockPositions[index].x, 
-            lockY: lockPositions[index].y, 
-            resetX: 100,
-            resetY: 100,
+            lockX: lockPositions[index].x,
+            lockY: lockPositions[index].y,
+            resetX: randomX, // Adjusted reset position
+            resetY: randomY, // Adjusted reset position
             angle: randomAngle,
         });
     });
     drawShapes();
     startCountdown();
-  })
-  .catch((error) => {
+})
+.catch((error) => {
     console.error('Fehler beim Laden der Bilder:', error);
-  });
+});
   
   
   function isMouseInShape(x, y, shape) {
