@@ -230,12 +230,18 @@ window.onload = () => {
                 ) {
                     // Check if the piece is also in the lock area
                     if (
-                        touchEndX <= selectedShape.lockX + 100 &&
-                        touchEndX >= selectedShape.lockX - 100 &&
-                        touchEndY >= selectedShape.lockY - 100 &&
-                        touchEndY <= selectedShape.lockY + 100
+                        touchEndX >= rectX &&
+                        touchEndX <= rectX + rectWidth &&
+                        touchEndY >= rectY &&
+                        touchEndY <= rectY + rectHeight
                     ) {
-                        if (selectedShape.angle === 0) {
+                        // Check if the piece is also in the lock area
+                        if (
+                            touchEndX <= selectedShape.lockX + xy &&
+                            touchEndX >= selectedShape.lockX &&
+                            touchEndY >= selectedShape.lockY &&
+                            touchEndY <= selectedShape.lockY + xy
+                        ) {
                             selectedShape.x = selectedShape.lockX;
                             selectedShape.y = selectedShape.lockY;
                             selectedShape.isLocked = true;
@@ -247,12 +253,9 @@ window.onload = () => {
                             selectedShape.x = selectedShape.resetX;
                             selectedShape.y = selectedShape.resetY;
                         }
-                    } else {
-                        selectedShape.x = selectedShape.resetX;
-                        selectedShape.y = selectedShape.resetY;
                     }
                 }
-            }
+            }                    
     
             selectedShape = null;
             drawShapes();
