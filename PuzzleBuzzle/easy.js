@@ -226,6 +226,13 @@ window.onload = () => {
         }
     }
 
+    function normalizeAngle(angle) {
+        while (angle < 0) {
+            angle += 360;
+        }
+        return angle % 360;
+    }    
+
     function handleTouchEnd(event) {
         event.preventDefault();
     
@@ -263,7 +270,8 @@ window.onload = () => {
                             lockedPieces++;
     
                             // Reset the rotation angle to 0 when the piece is locked
-                            selectedShape.angle = 0;
+                            // Reset the rotation angle to the normalized angle when the piece is locked
+                            selectedShape.angle = normalizeAngle(selectedShape.angle);
     
                             if (lockedPieces === shapes.length) {
                                 showGameOverModal();
