@@ -178,6 +178,7 @@ window.onload = () => {
         }
     }
 
+    let previousAngle = 0; // Setzen Sie dies am Anfang auf den Startwinkel
     function handleTouchMove(event) {
         event.preventDefault();
     
@@ -214,14 +215,17 @@ window.onload = () => {
                 const deltaY = touchY - touchStartY;
     
                 // Move the shape
-                selectedShape.x = touchX - startX;
-                selectedShape.y = touchY - startY;
-    
-                // Update the start position for the next move event
-                touchStartX = touchX;
-                touchStartY = touchY;
-    
-                drawShapes();
+        selectedShape.x = touchX - startX;
+        selectedShape.y = touchY - startY;
+
+        // Update the start position for the next move event
+        touchStartX = touchX;
+        touchStartY = touchY;
+
+        // Update the previous angle for the next move event
+        previousAngle = selectedShape.angle;
+
+        drawShapes();
             }
         }
     }
@@ -286,21 +290,20 @@ window.onload = () => {
         }
     }
 
-    function whichAngle(angle) {
+    function whichAngle(currentAngle, previousAngle) {
         const tolerance = 10; // Toleranzbereich für Winkeländerung
     
-        if (angle > 1 && angle <= 90 + tolerance) {
-            angle = 90;
-        } else if (angle > 90 - tolerance && angle <= 180 + tolerance) {
-            angle = 180;
-        } else if (angle > 180 - tolerance && angle <= 270 + tolerance) {
-            angle = 270;
+        if (currentAngle > 1 && currentAngle <= 90 + tolerance) {
+            return previousAngle + 90;
+        } else if (currentAngle > 90 - tolerance && currentAngle <= 180 + tolerance) {
+            return previousAngle + 180;
+        } else if (currentAngle > 180 - tolerance && currentAngle <= 270 + tolerance) {
+            return previousAngle + 270;
         } else {
-            angle = 0;
+            return previousAngle;
         }
-    
-        return angle * Math.PI / 180;
     }
+    
     
   
     function isTouchInShape(x, y, shape) {
