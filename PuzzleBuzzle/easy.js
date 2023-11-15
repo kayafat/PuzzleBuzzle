@@ -202,6 +202,14 @@ window.onload = () => {
             selectedShape.x = touchX - startX;
             selectedShape.y = touchY - startY;
     
+            // Check the direction of the swipe and adjust rotation accordingly
+            const swipeDirection = getSwipeDirection(deltaX, deltaY);
+            if (swipeDirection === 'left') {
+                selectedShape.angle -= rotationStep;
+            } else if (swipeDirection === 'right') {
+                selectedShape.angle += rotationStep;
+            }
+    
             // Update the start position for the next move event
             touchStartX = touchX;
             touchStartY = touchY;
@@ -209,6 +217,22 @@ window.onload = () => {
             drawShapes();
         }
     }
+    
+    function getSwipeDirection(deltaX, deltaY) {
+        const angle = Math.atan2(deltaY, deltaX);
+        const angleInDegrees = angle * (180 / Math.PI);
+    
+        if (angleInDegrees >= -45 && angleInDegrees <= 45) {
+            return 'right';
+        } else if (angleInDegrees > 45 && angleInDegrees <= 135) {
+            return 'up';
+        } else if (angleInDegrees > 135 || angleInDegrees <= -135) {
+            return 'left';
+        } else {
+            return 'down';
+        }
+    }
+    
     
 
     function handleTouchEnd(event) {
