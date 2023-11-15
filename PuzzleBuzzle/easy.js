@@ -288,11 +288,11 @@ window.onload = () => {
 
     function whichAngle(angle) {
         if (angle > 1 && angle <= 90) {
-            angle = 90 * Math.Pi / 180;
+            angle = 90 * Math.PI / 180;
         } else if (angle > 90 && angle <= 180) {
-            angle = (2* 90) * Math.Pi / 180;
+            angle = (2* 90) * Math.PI / 180;
         } else if (angle > 180 && angle <= 270) {
-            angle = (3* 90) * Math.Pi / 180;
+            angle = (3* 90) * Math.PI / 180;
         } else {
             angle = 0;
         }
@@ -439,5 +439,5 @@ window.onload = () => {
                 ctx.drawImage(image2, rectX + 3* xy + 50, rectY, 75, 75);
             };     
   }
-  
+
   };
