@@ -201,12 +201,8 @@ function handleTouchMove(event) {
             // Check the direction of the second swipe and rotate accordingly
             const swipeDistance = Math.sqrt(Math.pow((secondTouchEndX - secondTouchStartX), 2) + Math.pow((secondTouchEndY - secondTouchStartY), 2));
             if (swipeDistance >= rotationThreshold) {
-                const swipeDirection = getSwipeDirection(secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY);
-                if (swipeDirection === 'right') {
-                    selectedShape.angle += rotationSpeed;
-                } else if (swipeDirection === 'left') {
-                    selectedShape.angle -= rotationSpeed;
-                }
+                // Rotate the shape by a fixed angle (90 degrees)
+                selectedShape.angle += Math.PI / 2; // 90 degrees in radians
 
                 drawShapes();
                 return;
@@ -224,6 +220,7 @@ function handleTouchMove(event) {
         drawShapes();
     }
 }
+
 
 function getSwipeDirection(startX, startY, endX, endY) {
     const deltaX = endX - startX;
