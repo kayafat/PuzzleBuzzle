@@ -247,38 +247,41 @@ let rotationStartY = 0;
                     touchEndY >= rectY &&
                     touchEndY <= rectY + rectHeight
                 ) {
-                    // Check if the piece is also in the lock area
+                    // Check if the piece is also in the lock area and in the correct orientation
                     if (
-                        touchEndX >= rectX &&
-                        touchEndX <= rectX + rectWidth &&
-                        touchEndY >= rectY &&
-                        touchEndY <= rectY + rectHeight
+                        touchEndX <= selectedShape.lockX + xy &&
+                        touchEndX >= selectedShape.lockX &&
+                        touchEndY >= selectedShape.lockY &&
+                        touchEndY <= selectedShape.lockY + xy &&
+                        isCorrectOrientation(selectedShape)
                     ) {
-                        // Check if the piece is also in the lock area
-                        if (
-                            touchEndX <= selectedShape.lockX + xy &&
-                            touchEndX >= selectedShape.lockX &&
-                            touchEndY >= selectedShape.lockY &&
-                            touchEndY <= selectedShape.lockY + xy
-                        ) {
-                            selectedShape.x = selectedShape.lockX;
-                            selectedShape.y = selectedShape.lockY;
-                            selectedShape.isLocked = true;
-                            lockedPieces++;
-                            if (lockedPieces === shapes.length) {
-                                showGameOverModal();
-                            }
-                        } else {
-                            selectedShape.x = selectedShape.resetX;
-                            selectedShape.y = selectedShape.resetY;
+                        selectedShape.x = selectedShape.lockX;
+                        selectedShape.y = selectedShape.lockY;
+                        selectedShape.isLocked = true;
+                        lockedPieces++;
+                        if (lockedPieces === shapes.length) {
+                            showGameOverModal();
                         }
+                    } else {
+                        selectedShape.x = selectedShape.resetX;
+                        selectedShape.y = selectedShape.resetY;
                     }
                 }
-            }                    
+            }
     
             selectedShape = null;
             drawShapes();
         }
+    }
+    
+    function isCorrectOrientation(shape) {
+        // Add logic here to check if the shape is in the correct orientation
+        // You might need to compare the current angle of the shape with the correct angle
+        // Use a tolerance for small variations in the angle
+        const correctAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180); // Example correct angle
+        const angleTolerance = 0.1; // Tolerance in radians
+    
+        return Math.abs(shape.angle - correctAngle) < angleTolerance;
     }
     
   
