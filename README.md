@@ -1,6 +1,8 @@
 # PuzzleBuzzle
 A game where you have to complete a puzzle!
 
+The game offers 3 difficulties (Easy, Normal, Hard)
+
 To play on mobile devices:   
 	
  1. Copy the following git-repository-url:
