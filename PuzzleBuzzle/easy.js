@@ -279,7 +279,7 @@ window.onload = () => {
   
       // Prüft, ob das Spiel gewonnen ist
       if (lockedPieces === shapes.length) {
-          modal.innerHTML = `<p style="font-size: 55px; color: white">Congratulations, you've won!</p><button id="retryBtn">Retry</button><button id="menuBtn">Back to Menu</button>`;
+          modal.innerHTML = `<p style="font-size: 55px; color: white; margin: right">Congratulations, you've won!</p><button id="retryBtn">Retry</button><button id="menuBtn">Back to Menu</button>`;
           clearInterval(countdownInterval); // Falls gewonnen, stoppe den Countdown
       } else {
           modal.innerHTML = `<p style="font-size: 55px; color: white";>Game Over!</p><button id="retryBtn">Retry</button><button id="menuBtn">Back to Menu</button>`;
