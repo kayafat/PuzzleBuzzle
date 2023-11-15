@@ -147,68 +147,96 @@ window.onload = () => {
   canvas.addEventListener("touchend", handleTouchEnd);
   let secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY;
   
-  function handleTouchStart(event) {
-        event.preventDefault();
+let rotationThreshold = 50; // Schwellenwert für die Rotation, kann angepasst werden
+
+function handleTouchStart(event) {
+    event.preventDefault();
+
+    // Check for the second touch
+    if (event.touches.length === 2) {
+        const touch1 = event.touches[0];
+        const touch2 = event.touches[1];
+        secondTouchStartX = (touch1.clientX + touch2.clientX) / 2;
+        secondTouchStartY = (touch1.clientY + touch2.clientY) / 2;
+    } else {
+        // Your existing touchstart logic
+        const touch = event.touches[0];
+        touchStartX = touch.clientX - canvas.getBoundingClientRect().left;
+        touchStartY = touch.clientY - canvas.getBoundingClientRect().top;
+
+        for (const shape of shapes) {
+            if (isTouchInShape(touchStartX, touchStartY, shape)) {
+                if (!shape.isLocked) {
+                    isDragging = true;
+                    selectedShape = shape;
+                    startX = touchStartX - shape.x;
+                    startY = touchStartY - shape.y;
+                }
+                break;
+            }
+        }
+    }
+}
+
+function handleTouchMove(event) {
+    event.preventDefault();
+    if (isDragging && selectedShape && !selectedShape.isLocked) {
+        const touch = event.touches[0];
+        const touchX = touch.clientX - canvas.getBoundingClientRect().left;
+        const touchY = touch.clientY - canvas.getBoundingClientRect().top;
+
+        // Calculate the change in position
+        const deltaX = touchX - touchStartX;
+        const deltaY = touchY - touchStartY;
 
         // Check for the second touch
         if (event.touches.length === 2) {
             const touch1 = event.touches[0];
             const touch2 = event.touches[1];
-            secondTouchStartX = (touch1.clientX + touch2.clientX) / 2;
-            secondTouchStartY = (touch1.clientY + touch2.clientY) / 2;
-        } else {
-            // Your existing touchstart logic
-            const touch = event.touches[0];
-            touchStartX = touch.clientX - canvas.getBoundingClientRect().left;
-            touchStartY = touch.clientY - canvas.getBoundingClientRect().top;
+            secondTouchEndX = (touch1.clientX + touch2.clientX) / 2;
+            secondTouchEndY = (touch1.clientY + touch2.clientY) / 2;
 
-            for (const shape of shapes) {
-                if (isTouchInShape(touchStartX, touchStartY, shape)) {
-                    if (!shape.isLocked) {
-                        isDragging = true;
-                        selectedShape = shape;
-                        startX = touchStartX - shape.x;
-                        startY = touchStartY - shape.y;
-                    }
-                    break;
-                }
+            // Check the direction of the second swipe and rotate accordingly
+            const swipeDirection = getSwipeDirection(secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY);
+            if (swipeDirection === 'left') {
+                selectedShape.angle -= rotationStep;
+            } else if (swipeDirection === 'right') {
+                selectedShape.angle += rotationStep;
             }
-        }
-    }
 
-    function handleTouchMove(event) {
-        event.preventDefault();
-        if (isDragging && selectedShape && !selectedShape.isLocked) {
-            const touch = event.touches[0];
-            const touchX = touch.clientX - canvas.getBoundingClientRect().left;
-            const touchY = touch.clientY - canvas.getBoundingClientRect().top;
-    
-            // Calculate the change in position
-            const deltaX = touchX - touchStartX;
-            const deltaY = touchY - touchStartY;
-    
-            // Check for the second touch
-            if (event.touches.length === 2) {
-                // Your existing logic for the second touch
-    
-                // Instead of continuous rotation, rotate once by 90 degrees
-                selectedShape.angle += Math.PI / 2;
-    
-                drawShapes();
-                return;
-            }
-    
-            // Move the shape
-            selectedShape.x = touchX - startX;
-            selectedShape.y = touchY - startY;
-    
-            // Update the start position for the next move event
-            touchStartX = touchX;
-            touchStartY = touchY;
-    
             drawShapes();
+            return;
         }
-    } 
+
+        // Move the shape
+        selectedShape.x = touchX - startX;
+        selectedShape.y = touchY - startY;
+
+        // Update the start position for the next move event
+        touchStartX = touchX;
+        touchStartY = touchY;
+
+        drawShapes();
+    }
+}
+
+function getSwipeDirection(startX, startY, endX, endY) {
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+    const angle = Math.atan2(deltaY, deltaX);
+    const angleInDegrees = angle * (180 / Math.PI);
+
+    if (angleInDegrees >= -45 && angleInDegrees <= 45) {
+        return 'right';
+    } else if (angleInDegrees > 45 && angleInDegrees <= 135) {
+        return 'up';
+    } else if (angleInDegrees > 135 || angleInDegrees <= -135) {
+        return 'left';
+    } else {
+        return 'down';
+    }
+}
+ 
 
     function handleTouchEnd(event) {
         event.preventDefault();
