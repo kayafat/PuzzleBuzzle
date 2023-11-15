@@ -76,7 +76,7 @@ let rotationStartY = 0;
   }
   
   // Definition der Lock-Positionen für jedes Bild
-  const lockPositions = [
+  const initialPositions = [
     { x: rectX, y: rectY },
     { x: rectX + xy, y: rectY },
     { x: rectX + (2 * xy), y: rectY },
@@ -86,7 +86,7 @@ let rotationStartY = 0;
     { x: rectX, y: rectY + (2 * xy) },
     { x: rectX + xy, y: rectY + (2 * xy) },
     { x: rectX + (2 * xy), y: rectY + (2 * xy) },
-  ];
+];
   
   canvas.addEventListener("touchstart", handleTouchStart);
   canvas.addEventListener("touchmove", handleTouchMove);
@@ -108,32 +108,27 @@ let rotationStartY = 0;
   .then((loadedImages) => {
     loadedImages.forEach((image, index) => {
         images.push(image);
-  
-        // Generiere zufällige x- und y-Koordinaten, wobei x links vom Rechteck liegt
-        const randomX = getRandomInt(rectX - (xy / 2), rectX-2*xy);
-        const randomY = getRandomInt(rectY, rectY + rectHeight + xy);
-        const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);
-  
+
         shapes.push({
-            x: randomX,
-            y: randomY,
+            x: initialPositions[index].x,
+            y: initialPositions[index].y,
             width: xy,
             height: xy,
             imageIndex: index,
             isLocked: false,
-            lockX: lockPositions[index].x, 
-            lockY: lockPositions[index].y, 
-            resetX: 100,
-            resetY: 100,
-            angle: randomAngle,
+            lockX: lockPositions[index].x,
+            lockY: lockPositions[index].y,
+            resetX: initialPositions[index].x, // Use initial position for reset
+            resetY: initialPositions[index].y, // Use initial position for reset
+            angle: 0, // Initial angle
         });
     });
     drawShapes();
     startCountdown();
-  })
-  .catch((error) => {
-    console.error('Fehler beim Laden der Bilder:', error);
-  });
+})
+.catch((error) => {
+    console.error('Error loading images:', error);
+});
   
   
   function isMouseInShape(x, y, shape) {
