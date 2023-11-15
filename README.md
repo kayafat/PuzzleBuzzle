@@ -25,6 +25,4 @@ To play on mobile devices:
      
   7. Choose the PuzzleBuzzle Folder
   
-  8. For the best experience, we recommend to press F11 + F5 once, to play the game in fullscreen-mode.
-  
-  9. Enjoy Playing!
+  8. Enjoy Playing!
