@@ -232,6 +232,7 @@ let rotationStartY = 0;
 
     function handleTouchEnd(event) {
         event.preventDefault();
+        
         if (event.touches.length !== 2) {
             isDragging = false;
     
@@ -266,6 +267,9 @@ let rotationStartY = 0;
                         selectedShape.x = selectedShape.resetX;
                         selectedShape.y = selectedShape.resetY;
                     }
+                } else {
+                    selectedShape.x = selectedShape.resetX;
+                    selectedShape.y = selectedShape.resetY;
                 }
             }
     
@@ -273,6 +277,7 @@ let rotationStartY = 0;
             drawShapes();
         }
     }
+    
     
     function isCorrectOrientation(shape) {
         // Example correct angle based on the image index
