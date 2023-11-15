@@ -174,6 +174,7 @@ function handleTouchStart(event) {
                     startY = touchStartY - shape.y;
                 }
                 break;
+                //test
             }
         }
     }
