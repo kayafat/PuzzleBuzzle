@@ -287,17 +287,21 @@ window.onload = () => {
     }
 
     function whichAngle(angle) {
-        if (angle > 1 && angle <= 90) {
-            angle = 90 * Math.PI / 180;
-        } else if (angle > 90 && angle <= 180) {
-            angle = (180) * Math.PI / 180;
-        } else if (angle > 180 && angle <= 270) {
-            angle = (270) * Math.PI / 180;
+        const tolerance = 10; // Toleranzbereich für Winkeländerung
+    
+        if (angle > 1 && angle <= 90 + tolerance) {
+            angle = 90;
+        } else if (angle > 90 - tolerance && angle <= 180 + tolerance) {
+            angle = 180;
+        } else if (angle > 180 - tolerance && angle <= 270 + tolerance) {
+            angle = 270;
         } else {
             angle = 0;
         }
-        return angle;
-    }    
+    
+        return angle * Math.PI / 180;
+    }
+    
   
     function isTouchInShape(x, y, shape) {
         return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
