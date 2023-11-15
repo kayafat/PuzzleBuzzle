@@ -107,7 +107,7 @@ window.onload = () => {
   
         // Generiere zufällige x- und y-Koordinaten, wobei x links vom Rechteck liegt
         const randomX = getRandomInt(rectX, rectX + rectWidth - xy);
-        const randomY = getRandomInt(rectY + rectHeight, canvas.height - xy);
+        const randomY = getRandomInt(rectY + rectHeight, canvas.height - (3/2 * xy));
         const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);
   
         shapes.push({
