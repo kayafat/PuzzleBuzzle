@@ -455,7 +455,7 @@ function isMouseInShape(x, y, shape) {
                   ctx.rect(rectX + 5* xy + 20, rectY, 200, 200);
                   ctx.stroke();
           
-                  ctx.drawImage(image2, rectX + 3* xy + 20, rectY, 200, 200);
+                  ctx.drawImage(image2, rectX + 5* xy + 20, rectY, 200, 200);
               };     
     }
     
