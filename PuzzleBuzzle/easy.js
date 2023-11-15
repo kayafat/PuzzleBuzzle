@@ -187,14 +187,23 @@ window.onload = () => {
         const deltaX = touchX - touchStartX;
         const deltaY = touchY - touchStartY;
 
-        // Calculate the angle based on the change in position
-        let angle = Math.atan2(deltaY, deltaX);
+        // Check if it's a swipe or a tap (adjust the threshold as needed)
+        const isSwipe = Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5;
 
-        // Snap the angle to the nearest 90 degrees
-        angle = Math.round(angle / (Math.PI / 2)) * (Math.PI / 2);
+        if (isSwipe) {
+            // Calculate the angle based on the change in position
+            let angle = Math.atan2(deltaY, deltaX);
 
-        // Update the shape's angle
-        selectedShape.angle = angle;
+            // Snap the angle to the nearest 90 degrees
+            angle = Math.round(angle / (Math.PI / 2)) * (Math.PI / 2);
+
+            // Update the shape's angle
+            selectedShape.angle = angle;
+        } else {
+            // Move the shape
+            selectedShape.x = touchX - startX;
+            selectedShape.y = touchY - startY;
+        }
 
         // Update the start position for the next move event
         touchStartX = touchX;
@@ -203,6 +212,7 @@ window.onload = () => {
         drawShapes();
     }
 }
+
   
   function handleTouchEnd(event) {
       event.preventDefault();
