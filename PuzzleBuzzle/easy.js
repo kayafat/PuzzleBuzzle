@@ -232,7 +232,8 @@ let rotationStartY = 0;
 
     function handleTouchEnd(event) {
         event.preventDefault();
-        if (event.touches.length !== 2) {
+    
+        if (event.touches.length !== 2 && isDragging && selectedShape && !selectedShape.isLocked) {
             isDragging = false;
     
             if (selectedShape) {
@@ -249,21 +250,26 @@ let rotationStartY = 0;
                 ) {
                     // Check if the piece is also in the lock area
                     const lockPosition = getClosestLockPosition(selectedShape);
+    
+                    // Updated condition for locking and resetting
                     if (
-                        touchEndX <= lockPosition.x + xy &&
                         touchEndX >= lockPosition.x &&
+                        touchEndX <= lockPosition.x + xy &&
                         touchEndY >= lockPosition.y &&
                         touchEndY <= lockPosition.y + xy &&
                         isOrientationCorrect(selectedShape, lockPosition.orientation)
                     ) {
+                        // Lock the piece
                         selectedShape.x = lockPosition.x;
                         selectedShape.y = lockPosition.y;
                         selectedShape.isLocked = true;
                         lockedPieces++;
+    
                         if (lockedPieces === shapes.length) {
                             showGameOverModal();
                         }
                     } else {
+                        // Reset the piece to its initial position
                         selectedShape.x = selectedShape.resetX;
                         selectedShape.y = selectedShape.resetY;
                     }
@@ -274,6 +280,7 @@ let rotationStartY = 0;
             drawShapes();
         }
     }
+    
     
     function getClosestLockPosition(shape) {
         // Find the lock position that is closest to the current shape's position
