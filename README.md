@@ -11,7 +11,7 @@ To play on mobile devices:
   
  2. Visit the following website:
 
-		https://glitch.com/edit/#!/insidious-waiting-pram?path=README.md%3A1%3A0
+		https://glitch.com/edit/#!/
   
  3. Once you are on glitch.com choose Settings on the left of the screen
     
