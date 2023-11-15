@@ -110,7 +110,7 @@ window.onload = () => {
         images.push(image);
   
         // Generiere zufällige x- und y-Koordinaten, wobei x links vom Rechteck liegt
-        const randomX = getRandomInt(rectX - (xy / 2), rectX-2*xy);
+        const randomX = getRandomInt(rectX-2*xy, rectX);
         const randomY = getRandomInt(rectY, rectY + rectHeight + xy);
         const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);
   
@@ -149,7 +149,7 @@ window.onload = () => {
   canvas.addEventListener("touchstart", handleTouchStart);
   canvas.addEventListener("touchmove", handleTouchMove);
   canvas.addEventListener("touchend", handleTouchEnd);
-  let secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY;
+  //let secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY;
   
   function handleTouchStart(event) {
         event.preventDefault();
