@@ -248,35 +248,25 @@ let rotationStartY = 0;
                     touchEndY >= rectY &&
                     touchEndY <= rectY + rectHeight
                 ) {
-                    // Find the closest lock position
-                    let closestLockIndex = -1;
-                    let closestDistance = Number.MAX_VALUE;
-    
-                    for (let i = 0; i < lockPositions.length; i++) {
-                        const lock = lockPositions[i];
-                        const distance = Math.sqrt(
-                            Math.pow(touchEndX - lock.x, 2) + Math.pow(touchEndY - lock.y, 2)
-                        );
-    
-                        if (distance < closestDistance) {
-                            closestDistance = distance;
-                            closestLockIndex = i;
-                        }
-                    }
-    
-                    // Snap the piece to the closest lock position
-                    if (closestLockIndex !== -1) {
-                        const lock = lockPositions[closestLockIndex];
-                        selectedShape.x = lock.x - selectedShape.width / 2;
-                        selectedShape.y = lock.y - selectedShape.height / 2;
+                    // Check if the piece is also in the lock area
+                    if (
+                        touchEndX <= selectedShape.lockX + xy &&
+                        touchEndX >= selectedShape.lockX &&
+                        touchEndY >= selectedShape.lockY &&
+                        touchEndY <= selectedShape.lockY + xy
+                    ) {
+                        selectedShape.x = selectedShape.lockX;
+                        selectedShape.y = selectedShape.lockY;
                         selectedShape.isLocked = true;
                         lockedPieces++;
+    
+                        // Reset the rotation angle to 0 when the piece is locked
+                        selectedShape.angle = 0;
     
                         if (lockedPieces === shapes.length) {
                             showGameOverModal();
                         }
                     } else {
-                        // If the piece is not close to any lock position, reset its position
                         selectedShape.x = selectedShape.resetX;
                         selectedShape.y = selectedShape.resetY;
                     }
@@ -287,6 +277,7 @@ let rotationStartY = 0;
             drawShapes();
         }
     }
+    
     
   
     function isTouchInShape(x, y, shape) {
