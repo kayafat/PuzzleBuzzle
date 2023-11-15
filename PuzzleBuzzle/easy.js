@@ -18,12 +18,8 @@ window.onload = () => {
     const rectX = (canvas.width - rectWidth) / 2;
     const rectY = (canvas.height - rectHeight) / 4;
     // Breite und Höhe des Rechtecks 3x3
-    const conWidth = 400;
-    const conHeight = 100;
-    // Berechne die Position des Rechtecks, um es in der Mitte des Canvas zu platzieren
-    const conX = (canvas.width - conWidth) / 2;
-    const conY = rectHeight + 170;
-    
+ //   const conWidth = 400;
+      
     // Countdown-Variablen
     let countdown = 60; // Startzeit in Sekunden
     let countdownInterval; // Variable für das Intervall
@@ -44,12 +40,12 @@ window.onload = () => {
   const images = [];
   let isDragging = false;
   let startX, startY;
-  let rotationStep = Math.PI / 2; 
+//  let rotationStep = Math.PI / 2; 
   let selectedShape = null;
 
   let rotationStartAngle = 0;
-  let rotationStartX = 0;
-  let rotationStartY = 0;
+//  let rotationStartX = 0;
+//  let rotationStartY = 0;
   
   function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -110,7 +106,7 @@ window.onload = () => {
         images.push(image);
   
         // Generiere zufällige x- und y-Koordinaten, wobei x links vom Rechteck liegt
-        const randomX = getRandomInt(rectX-2*xy, rectX);
+        const randomX = rectX + rectWidth + getRandomInt(10, 50); // Passen Sie die Offset-Werte nach Bedarf an
         const randomY = getRandomInt(rectY, rectY + rectHeight + xy);
         const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);
   
