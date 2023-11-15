@@ -104,6 +104,10 @@ const lockPositions = [
   { x: rectX + (4 * xy), y: rectY + (4 * xy) },
 ];
 
+canvas.addEventListener("touchstart", handleTouchStart);
+canvas.addEventListener("touchmove", handleTouchMove);
+canvas.addEventListener("touchend", handleTouchEnd);
+
 // Laden der Bilder in der gewünschten Reihenfolge und Zuordnung zu den Indexen
 Promise.all([
   loadImage('./images/Bluete/blume2_1.jpg'),

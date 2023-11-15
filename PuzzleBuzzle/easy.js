@@ -413,15 +413,6 @@ window.onload = () => {
         ctx.stroke();
     }
   
-    // Kleines Rechteck unten (Platzhalter für eventuellen Countdown)
-  
-        ctx.beginPath();
-        ctx.lineWidth = "2";
-        ctx.strokeStyle = "white";
-        ctx.rect(conX, conY, conWidth, conHeight);  
-        ctx.stroke();
-  
-  
     // Rechteck für das Lösungsbild
   
         const imageUrlForRectangle = './images/bild2.jpg';
