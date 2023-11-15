@@ -288,13 +288,13 @@ window.onload = () => {
 
     function whichAngle(angle) {
         if (angle > 1 && angle <= 90) {
-            angle = 90 * Math.PI / 180;
+            angle = (0*90) * Math.PI / 180;
         } else if (angle > 90 && angle <= 180) {
-            angle = (2* 90) * Math.PI / 180;
+            angle = (1* 90) * Math.PI / 180;
         } else if (angle > 180 && angle <= 270) {
-            angle = (3* 90) * Math.PI / 180;
+            angle = (2* 90) * Math.PI / 180;
         } else {
-            angle = 0;
+            angle = (3* 90) * Math.PI / 180;;
         }
         return angle;
     }
