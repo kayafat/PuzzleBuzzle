@@ -226,13 +226,6 @@ window.onload = () => {
         }
     }
 
-    function normalizeAngle(angle) {
-        while (angle < 0) {
-            angle += 360;
-        }
-        return angle % 360;
-    }    
-
     function handleTouchEnd(event) {
         event.preventDefault();
     
@@ -271,8 +264,10 @@ window.onload = () => {
     
                             // Reset the rotation angle to 0 when the piece is locked
                             // Reset the rotation angle to the normalized angle when the piece is locked
-                            selectedShape.angle = normalizeAngle(selectedShape.angle);
-    
+                            // Reset the rotation angle to the nearest multiple of 90 degrees when the piece is locked
+const nearestMultipleOf90 = Math.round(selectedShape.angle / 90) * 90;
+selectedShape.angle = nearestMultipleOf90;
+
                             if (lockedPieces === shapes.length) {
                                 showGameOverModal();
                             }
