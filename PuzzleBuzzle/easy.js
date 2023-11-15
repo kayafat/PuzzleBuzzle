@@ -232,7 +232,6 @@ let rotationStartY = 0;
 
     function handleTouchEnd(event) {
         event.preventDefault();
-        
         if (event.touches.length !== 2) {
             isDragging = false;
     
@@ -248,18 +247,22 @@ let rotationStartY = 0;
                     touchEndY >= rectY &&
                     touchEndY <= rectY + rectHeight
                 ) {
-                    // Check if the piece is also in the lock area and in the correct orientation
                     if (
                         touchEndX <= selectedShape.lockX + xy &&
                         touchEndX >= selectedShape.lockX &&
                         touchEndY >= selectedShape.lockY &&
-                        touchEndY <= selectedShape.lockY + xy &&
-                        isCorrectOrientation(selectedShape)
+                        touchEndY <= selectedShape.lockY + xy
                     ) {
-                        selectedShape.x = selectedShape.lockX;
-                        selectedShape.y = selectedShape.lockY;
+                        // Calculate the rotated position
+                        const rotatedX = selectedShape.lockX + (Math.cos(selectedShape.angle) * (selectedShape.x - selectedShape.lockX) - Math.sin(selectedShape.angle) * (selectedShape.y - selectedShape.lockY));
+                        const rotatedY = selectedShape.lockY + (Math.sin(selectedShape.angle) * (selectedShape.x - selectedShape.lockX) + Math.cos(selectedShape.angle) * (selectedShape.y - selectedShape.lockY));
+                    
+                        // Set the position and lock the piece
+                        selectedShape.x = rotatedX;
+                        selectedShape.y = rotatedY;
                         selectedShape.isLocked = true;
                         lockedPieces++;
+                    
                         if (lockedPieces === shapes.length) {
                             showGameOverModal();
                         }
@@ -267,34 +270,13 @@ let rotationStartY = 0;
                         selectedShape.x = selectedShape.resetX;
                         selectedShape.y = selectedShape.resetY;
                     }
-                } else {
-                    selectedShape.x = selectedShape.resetX;
-                    selectedShape.y = selectedShape.resetY;
                 }
-            }
+            }                    
     
             selectedShape = null;
             drawShapes();
         }
     }
-    
-    
-    function isCorrectOrientation(shape) {
-        // Example correct angle based on the image index
-        const correctAngle = (shape.imageIndex * 90) * (Math.PI / 180);
-    
-        // Tolerance in radians to account for small variations
-        const angleTolerance = 0.1;
-    
-        // Normalize the angles to be in the range [0, 2*PI)
-        const normalizedShapeAngle = (shape.angle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-        const normalizedCorrectAngle = (correctAngle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-    
-        // Check if the absolute difference between angles is within the tolerance
-        return Math.abs(normalizedShapeAngle - normalizedCorrectAngle) < angleTolerance;
-    }
-    
-    
     
   
     function isTouchInShape(x, y, shape) {
