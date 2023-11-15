@@ -20,7 +20,7 @@ To play on mobile devices:
     
 		3.1 New Project
 		3.2 Import from GitHub (At the bottom of the opened window)
-		3.3 copy the following git-repository-url: [https:github](https://github.com/kayafat/PuzzleBuzzle.git)https://github.com/kayafat/PuzzleBuzzle.git
+		3.3 copy the following git-repository-url: https://github.com/kayafat/PuzzleBuzzle.git
   
   5. When the project has been loaded, you can see a "PREVIEW" button at the bottom of your screen.
      
