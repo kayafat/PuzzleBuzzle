@@ -440,19 +440,10 @@ function isMouseInShape(x, y, shape) {
           ctx.strokeStyle = "grey";
           ctx.stroke();
       }
-    
-      // Kleines Rechteck unten (Platzhalter für eventuellen Countdown)
-    
-          ctx.beginPath();
-          ctx.lineWidth = "2";
-          ctx.strokeStyle = "white";
-          ctx.rect(conX, conY, conWidth, conHeight);  
-          ctx.stroke();
-    
-    
+     
       // Rechteck für das Lösungsbild
     
-          const imageUrlForRectangle = './images/bild2.jpg';
+          const imageUrlForRectangle = './images/blume2.jpg';
     
           const image2 = new Image();
               image2.src = imageUrlForRectangle;
