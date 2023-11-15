@@ -148,109 +148,116 @@ window.onload = () => {
   let secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY;
   
   function handleTouchStart(event) {
-      event.preventDefault();
-  
-      // Check for the second touch
-      if (event.touches.length === 2) {
-          const touch1 = event.touches[0];
-          const touch2 = event.touches[1];
-          secondTouchStartX = (touch1.clientX + touch2.clientX) / 2;
-          secondTouchStartY = (touch1.clientY + touch2.clientY) / 2;
-      } else {
-          // Your existing touchstart logic
-          const touch = event.touches[0];
-          touchStartX = touch.clientX - canvas.getBoundingClientRect().left;
-          touchStartY = touch.clientY - canvas.getBoundingClientRect().top;
-  
-          for (const shape of shapes) {
-              if (isTouchInShape(touchStartX, touchStartY, shape)) {
-                  if (!shape.isLocked) {
-                      isDragging = true;
-                      selectedShape = shape;
-                      startX = touchStartX - shape.x;
-                      startY = touchStartY - shape.y;
-                  }
-                  break;
-              }
-          }
-      }
-  }
-  
-  function handleTouchMove(event) {
-      event.preventDefault();
-  
-      // Check for the second touch
-      if (event.touches.length === 2) {
-          const touch1 = event.touches[0];
-          const touch2 = event.touches[1];
-          secondTouchEndX = (touch1.clientX + touch2.clientX) / 2;
-          secondTouchEndY = (touch1.clientY + touch2.clientY) / 2;
-  
-          // Calculate the rotation angle based on the movement of the second touch
-          const angleDeltaX = secondTouchEndX - secondTouchStartX;
-          const angleDeltaY = secondTouchEndY - secondTouchStartY;
-          const angle = Math.atan2(angleDeltaY, angleDeltaX);
-  
-          // Apply rotation to the selected shape
-          if (selectedShape && !selectedShape.isLocked) {
-              selectedShape.angle += angle;
-              drawShapes();
-          }
-  
-          // Update the start position for the next move
-          secondTouchStartX = secondTouchEndX;
-          secondTouchStartY = secondTouchEndY;
-      } else {
-          // Your existing touchmove logic
-          if (isDragging && selectedShape && !selectedShape.isLocked) {
-              const touch = event.touches[0];
-              const touchX = touch.clientX - canvas.getBoundingClientRect().left;
-              const touchY = touch.clientY - canvas.getBoundingClientRect().top;
-              selectedShape.x = touchX - startX;
-              selectedShape.y = touchY - startY;
-              drawShapes();
-          }
-      }
-  }
-  
-  function handleTouchEnd(event) {
-      event.preventDefault();
-  
-      // Check for the second touch
-      if (event.touches.length !== 2) {
-          // Your existing touchend logic
-          isDragging = false;
-  
-          if (selectedShape) {
-              const touch = event.changedTouches[0];
-              const touchEndX = touch.clientX - canvas.getBoundingClientRect().left;
-              const touchEndY = touch.clientY - canvas.getBoundingClientRect().top;
-  
-              if (
-                  touchEndX <= selectedShape.lockX + 100 &&
-                  touchEndX >= selectedShape.lockX - 100 &&
-                  touchEndY >= selectedShape.lockY - 100 &&
-                  touchEndY <= selectedShape.lockY + 100
-              ) {
-                  if (selectedShape.angle === 0) {
-                      selectedShape.x = selectedShape.lockX;
-                      selectedShape.y = selectedShape.lockY;
-                      selectedShape.isLocked = true;
-                      lockedPieces++;
-                      if (lockedPieces === shapes.length) {
-                          showGameOverModal();
-                      }
-                  } else {
-                      selectedShape.x = selectedShape.resetX;
-                      selectedShape.y = selectedShape.resetY;
-                  }
-              }
-          }
-  
-          selectedShape = null;
-          drawShapes();
-      }
-  }
+    event.preventDefault();
+
+    // Check for the second touch
+    if (event.touches.length === 2) {
+        const touch1 = event.touches[0];
+        const touch2 = event.touches[1];
+        secondTouchStartX = (touch1.clientX + touch2.clientX) / 2;
+        secondTouchStartY = (touch1.clientY + touch2.clientY) / 2;
+    } else {
+        // Your existing touchstart logic
+        const touch = event.touches[0];
+        touchStartX = touch.clientX - canvas.getBoundingClientRect().left;
+        touchStartY = touch.clientY - canvas.getBoundingClientRect().top;
+
+        for (const shape of shapes) {
+            if (isTouchInShape(touchStartX, touchStartY, shape)) {
+                if (!shape.isLocked) {
+                    isDragging = true;
+                    selectedShape = shape;
+                    startX = touchStartX - shape.x;
+                    startY = touchStartY - shape.y;
+                }
+                break;
+            }
+        }
+    }
+}
+
+function handleTouchMove(event) {
+    event.preventDefault();
+
+    // Check for the second touch
+    if (event.touches.length === 2) {
+        const touch1 = event.touches[0];
+        const touch2 = event.touches[1];
+        secondTouchEndX = (touch1.clientX + touch2.clientX) / 2;
+        secondTouchEndY = (touch1.clientY + touch2.clientY) / 2;
+
+        // Calculate the rotation angle based on the movement of the second touch
+        const angleDeltaX = secondTouchEndX - secondTouchStartX;
+        const angleDeltaY = secondTouchEndY - secondTouchStartY;
+        const angle = Math.atan2(angleDeltaY, angleDeltaX);
+
+        // Determine the direction of rotation (clockwise or counterclockwise)
+        const clockwise = angle > 0;
+
+        // Rotate the selected shape by 90 degrees
+        if (selectedShape && !selectedShape.isLocked) {
+            if (clockwise) {
+                selectedShape.angle += Math.PI / 2; // 90 degrees in radians
+            } else {
+                selectedShape.angle -= Math.PI / 2; // 90 degrees in radians
+            }
+            drawShapes();
+        }
+
+        // Update the start position for the next move
+        secondTouchStartX = secondTouchEndX;
+        secondTouchStartY = secondTouchEndY;
+    } else {
+        // Your existing touchmove logic
+        if (isDragging && selectedShape && !selectedShape.isLocked) {
+            const touch = event.touches[0];
+            const touchX = touch.clientX - canvas.getBoundingClientRect().left;
+            const touchY = touch.clientY - canvas.getBoundingClientRect().top;
+            selectedShape.x = touchX - startX;
+            selectedShape.y = touchY - startY;
+            drawShapes();
+        }
+    }
+}
+
+function handleTouchEnd(event) {
+    event.preventDefault();
+
+    // Check for the second touch
+    if (event.touches.length !== 2) {
+        // Your existing touchend logic
+        isDragging = false;
+
+        if (selectedShape) {
+            const touch = event.changedTouches[0];
+            const touchEndX = touch.clientX - canvas.getBoundingClientRect().left;
+            const touchEndY = touch.clientY - canvas.getBoundingClientRect().top;
+
+            if (
+                touchEndX <= selectedShape.lockX + 100 &&
+                touchEndX >= selectedShape.lockX - 100 &&
+                touchEndY >= selectedShape.lockY - 100 &&
+                touchEndY <= selectedShape.lockY + 100
+            ) {
+                if (selectedShape.angle === 0) {
+                    selectedShape.x = selectedShape.lockX;
+                    selectedShape.y = selectedShape.lockY;
+                    selectedShape.isLocked = true;
+                    lockedPieces++;
+                    if (lockedPieces === shapes.length) {
+                        showGameOverModal();
+                    }
+                } else {
+                    selectedShape.x = selectedShape.resetX;
+                    selectedShape.y = selectedShape.resetY;
+                }
+            }
+        }
+
+        selectedShape = null;
+        drawShapes();
+    }
+}
   
   function isTouchInShape(x, y, shape) {
       return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
