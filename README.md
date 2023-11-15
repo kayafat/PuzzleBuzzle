@@ -1,11 +1,6 @@
 # PuzzleBuzzle
 A game where you have to complete a puzzle!
 
-To play the game, make sure to choose on which platform you want to play.
-You can either play on your PC or on your mobile device (iPad recommended)
-
-On PC you can simply download the folder and open the index.html. Therefore you can easily play the game and choose your difficulty.
-
 To play on mobile devices:   
 	
  1. Copy the following git-repository-url:
