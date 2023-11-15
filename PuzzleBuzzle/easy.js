@@ -199,8 +199,11 @@ window.onload = () => {
                 const deltaSecondY = newSecondTouchY - secondTouchStartY;
                 const angleChange = Math.atan2(deltaSecondY, deltaSecondX);
     
-                // Update the shape's angle based on the angle change
-                selectedShape.angle += angleChange;
+                // Restrict the rotation to 90-degree steps
+                const roundedAngleChange = Math.round(angleChange / (Math.PI / 2)) * (Math.PI / 2);
+    
+                // Update the shape's angle based on the restricted angle change
+                selectedShape.angle += roundedAngleChange;
     
                 // Update the start position for the next move event
                 secondTouchStartX = newSecondTouchX;
