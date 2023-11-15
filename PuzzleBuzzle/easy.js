@@ -218,8 +218,12 @@ window.onload = () => {
     
             // Determine the direction of the movement and rotate accordingly
             if (distance > 10) {
-                // Adjust the rotation step based on the distance moved
-                selectedShape.angle += (deltaSecondTouchX / distance) * rotationStep;
+                // Calculate the angle of rotation based on the change in position
+                const angle = Math.atan2(deltaSecondTouchY, deltaSecondTouchX);
+    
+                // Update the rotation angle of the selected shape
+                selectedShape.angle = angle;
+    
                 drawShapes();
             }
     
@@ -228,6 +232,7 @@ window.onload = () => {
             secondTouchStartY = currentSecondTouchY;
         }
     }
+    
 
     function handleTouchEnd(event) {
         event.preventDefault();
