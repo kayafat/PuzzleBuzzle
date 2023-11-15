@@ -148,7 +148,7 @@ window.onload = () => {
  
   let secondTouchStartX, secondTouchStartY, secondTouchEndX, secondTouchEndY;
 let rotationThreshold = 2; // Schwellenwert für die Rotation in cm, kann angepasst werden
-let rotationSpeed = 0.01; // Geschwindigkeit der Drehung, kann angepasst werden
+let rotationSpeed = 0.005; // Geschwindigkeit der Drehung, kann angepasst werden
 
 function handleTouchStart(event) {
     event.preventDefault();
@@ -260,29 +260,21 @@ function handleTouchEnd(event) {
             ) {
                 // Check if the piece is also in the lock area
                 if (
-                    touchEndX >= rectX &&
-                    touchEndX <= rectX + rectWidth &&
-                    touchEndY >= rectY &&
-                    touchEndY <= rectY + rectHeight
+                    touchEndX <= selectedShape.lockX + xy &&
+                    touchEndX >= selectedShape.lockX &&
+                    touchEndY >= selectedShape.lockY &&
+                    touchEndY <= selectedShape.lockY + xy
                 ) {
-                    // Check if the piece is also in the lock area
-                    if (
-                        touchEndX <= selectedShape.lockX + xy &&
-                        touchEndX >= selectedShape.lockX &&
-                        touchEndY >= selectedShape.lockY &&
-                        touchEndY <= selectedShape.lockY + xy
-                    ) {
-                        selectedShape.x = selectedShape.lockX;
-                        selectedShape.y = selectedShape.lockY;
-                        selectedShape.isLocked = true;
-                        lockedPieces++;
-                        if (lockedPieces === shapes.length) {
-                            showGameOverModal();
-                        }
-                    } else {
-                        selectedShape.x = selectedShape.resetX;
-                        selectedShape.y = selectedShape.resetY;
+                    selectedShape.x = selectedShape.lockX;
+                    selectedShape.y = selectedShape.lockY;
+                    selectedShape.isLocked = true;
+                    lockedPieces++;
+                    if (lockedPieces === shapes.length) {
+                        showGameOverModal();
                     }
+                } else {
+                    selectedShape.x = selectedShape.resetX;
+                    selectedShape.y = selectedShape.resetY;
                 }
             }
             
