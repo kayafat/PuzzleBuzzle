@@ -44,7 +44,7 @@ window.onload = () => {
   const images = [];
   let isDragging = false;
   let startX, startY;
-  let rotationStep = Math.PI / 1080; 
+  let rotationStep = Math.PI / 2; 
   let selectedShape = null;
   
   function getRandomInt(min, max) {
@@ -264,15 +264,7 @@ window.onload = () => {
     }
   
     function isTouchInShape(x, y, shape) {
-        // Increase the hitbox for each side of the puzzle piece
-        const hitboxMargin = 20;
-    
-        return (
-            x > shape.x - hitboxMargin &&
-            x < shape.x + shape.width + hitboxMargin &&
-            y > shape.y - hitboxMargin &&
-            y < shape.y + shape.height + hitboxMargin
-        );
+        return x > shape.x && x < shape.x + shape.width && y > shape.y && y < shape.y + shape.height;
     }
   
   
