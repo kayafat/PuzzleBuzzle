@@ -86,7 +86,7 @@ let rotationStartY = 0;
     { x: rectX, y: rectY + (2 * xy) },
     { x: rectX + xy, y: rectY + (2 * xy) },
     { x: rectX + (2 * xy), y: rectY + (2 * xy) },
-];
+  ];
   
   canvas.addEventListener("touchstart", handleTouchStart);
   canvas.addEventListener("touchmove", handleTouchMove);
@@ -108,15 +108,12 @@ let rotationStartY = 0;
   .then((loadedImages) => {
     loadedImages.forEach((image, index) => {
         images.push(image);
-
-        // Adjusted random position to align with the grid
-        const row = Math.floor(index / 3);
-        const col = index % 3;
-        const randomX = rectX + col * xy;
-        const randomY = rectY + row * xy;
-
+  
+        // Generiere zufällige x- und y-Koordinaten, wobei x links vom Rechteck liegt
+        const randomX = getRandomInt(rectX - (xy / 2), rectX-2*xy);
+        const randomY = getRandomInt(rectY, rectY + rectHeight + xy);
         const randomAngle = (getRandomInt(0, 3) * 90) * (Math.PI / 180);
-
+  
         shapes.push({
             x: randomX,
             y: randomY,
@@ -124,19 +121,19 @@ let rotationStartY = 0;
             height: xy,
             imageIndex: index,
             isLocked: false,
-            lockX: lockPositions[index].x,
-            lockY: lockPositions[index].y,
-            resetX: randomX, // Adjusted reset position
-            resetY: randomY, // Adjusted reset position
+            lockX: lockPositions[index].x, 
+            lockY: lockPositions[index].y, 
+            resetX: 100,
+            resetY: 100,
             angle: randomAngle,
         });
     });
     drawShapes();
     startCountdown();
-})
-.catch((error) => {
+  })
+  .catch((error) => {
     console.error('Fehler beim Laden der Bilder:', error);
-});
+  });
   
   
   function isMouseInShape(x, y, shape) {
@@ -233,56 +230,65 @@ let rotationStartY = 0;
         }
     }
 
-    function handleTouchEnd(event) {
-        event.preventDefault();
-        if (event.touches.length !== 2) {
-            isDragging = false;
-    
-            if (selectedShape) {
-                const touch = event.changedTouches[0];
-                const touchEndX = touch.clientX - canvas.getBoundingClientRect().left;
-                const touchEndY = touch.clientY - canvas.getBoundingClientRect().top;
-    
-                // Check if the piece is within the playfield
-                if (
-                    touchEndX >= rectX &&
-                    touchEndX <= rectX + rectWidth &&
-                    touchEndY >= rectY &&
-                    touchEndY <= rectY + rectHeight
-                ) {
-                    // Check if the piece is also in the lock area
-                    if (
-                        touchEndX >= rectX &&
-                        touchEndX <= rectX + rectWidth &&
-                        touchEndY >= rectY &&
-                        touchEndY <= rectY + rectHeight
-                    ) {
-                        // Check if the piece is also in the lock area
-                        if (
-                            touchEndX <= selectedShape.lockX + xy &&
-                            touchEndX >= selectedShape.lockX &&
-                            touchEndY >= selectedShape.lockY &&
-                            touchEndY <= selectedShape.lockY + xy
-                        ) {
-                            selectedShape.x = selectedShape.lockX;
-                            selectedShape.y = selectedShape.lockY;
-                            selectedShape.isLocked = true;
-                            lockedPieces++;
-                            if (lockedPieces === shapes.length) {
-                                showGameOverModal();
-                            }
-                        } else {
-                            selectedShape.x = selectedShape.resetX;
-                            selectedShape.y = selectedShape.resetY;
-                        }
+    canvas.addEventListener("touchend", handleTouchEnd);
+
+function handleTouchEnd(event) {
+    event.preventDefault();
+
+    if (event.touches.length !== 2) {
+        isDragging = false;
+
+        if (selectedShape) {
+            const touch = event.changedTouches[0];
+            const touchEndX = touch.clientX - canvas.getBoundingClientRect().left;
+            const touchEndY = touch.clientY - canvas.getBoundingClientRect().top;
+
+            // Check if the piece is within the playfield
+            if (
+                touchEndX >= rectX &&
+                touchEndX <= rectX + rectWidth &&
+                touchEndY >= rectY &&
+                touchEndY <= rectY + rectHeight
+            ) {
+                // Find the closest lock position
+                let closestLockIndex = -1;
+                let closestDistance = Number.MAX_VALUE;
+
+                for (let i = 0; i < lockPositions.length; i++) {
+                    const lock = lockPositions[i];
+                    const distance = Math.sqrt(
+                        Math.pow(touchEndX - lock.x, 2) + Math.pow(touchEndY - lock.y, 2)
+                    );
+
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestLockIndex = i;
                     }
                 }
-            }                    
-    
-            selectedShape = null;
-            drawShapes();
+
+                // Snap the piece to the closest lock position
+                if (closestLockIndex !== -1) {
+                    const lock = lockPositions[closestLockIndex];
+                    selectedShape.x = lock.x;
+                    selectedShape.y = lock.y;
+                    selectedShape.isLocked = true;
+                    lockedPieces++;
+
+                    if (lockedPieces === shapes.length) {
+                        showGameOverModal();
+                    }
+                } else {
+                    // If the piece is not close to any lock position, reset its position
+                    selectedShape.x = selectedShape.resetX;
+                    selectedShape.y = selectedShape.resetY;
+                }
+            }
         }
+
+        selectedShape = null;
+        drawShapes();
     }
+}
     
   
     function isTouchInShape(x, y, shape) {
